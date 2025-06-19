@@ -4,7 +4,6 @@ import React, {useState} from 'react';
 import {Helmet} from 'react-helmet'; 
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
-import pantera1 from '../imagenes/Pantera1.png'
 import BotonAtras from '../elementos/BotonAtras';
 import AnadirMaterial from '../imagenes/AnadirMaterial.png'
 import EliminarMaterial from '../imagenes/EliminarMaterial.png'
@@ -39,6 +38,7 @@ const ContenedorBotonRegistro = styled.div`
 
 
 const MaterialesDisponibles =() =>{
+      const navigate = useNavigate(); 
     return(
         <>
           <Helmet>
@@ -58,14 +58,14 @@ const MaterialesDisponibles =() =>{
       <ImagenLogo1 src={EliminarMaterial} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit"> Añadir Material</Boton>
-					<Boton as="button" primario type="submit"> Eliminar Material</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/registro-material")} > Añadir Material</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/eliminar-material")} > Eliminar Material</Boton>
 			</ContenedorBotonRegistro>
       <ContenedorImagen>
       <ImagenLogo1 src={BuscarMaterial} alt="LogoUam" /> 
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit"> Mostrar Material</Boton> 
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-materiales")}> Mostrar Material</Boton> 
 			</ContenedorBotonRegistro>
      
         </>
@@ -74,5 +74,3 @@ const MaterialesDisponibles =() =>{
 }
 
 export default MaterialesDisponibles;
-
-

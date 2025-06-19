@@ -70,7 +70,7 @@ const createAlumno = async (req, res, next) => {
 
 const deleteAlumno = async (req, res, next) => {
 
-    const { id } = req.params
+    const { id } = req.params;
     try{
         const result = await pool.query(
             'DELETE FROM alumno WHERE id = $1 RETURNING *', [id]);
@@ -86,55 +86,85 @@ const deleteAlumno = async (req, res, next) => {
 
 const updateAlumno = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const {
-            matricula,
-            password,
-            nombre,
-            apellidop,
-            apellidom,
-            unidad,
-            división,
-            licenciatura,
-            estado,
-            correoinstitucional,
-            observaciones
-        } = req.body;
-
-        const result = await pool.query(
-            `UPDATE alumno 
-            SET matricula = $1, password = $2, nombre = $3, apellidopaterno = $4, 
-                apellidomaterno = $5, unidad = $6, división = $7, licenciatura = $8, 
-                estado = $9, correoinstitucional = $10, observaciones = $11
-            WHERE id = $12 
-            RETURNING *`,
-            [
-                matricula,
-                password,
-                nombre,
-                apellidop,
-                apellidom,
-                unidad,
-                división,
-                licenciatura,
-                estado,
-                correoinstitucional,
-                observaciones,
-                id
-            ]
-        );
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({
-                message: "Alumno no encontrado",
-            });
-        }
-
-        return res.json(result.rows[0]);
+      const { id } = req.params;
+      const {
+        matricula,
+        password,
+        nombre,
+        apellidop,
+        apellidom,
+        unidad,
+        división,
+        licenciatura,
+        estado,
+        correoinstitucional,
+        observaciones,
+      } = req.body;
+  
+      let query;
+      let values;
+  
+      if (password && password.trim() !== "") {
+        // Si se proporciona contraseña, se actualiza también
+        query = `
+          UPDATE alumno 
+          SET matricula = $1, password = $2, nombre = $3, apellidopaterno = $4, 
+              apellidomaterno = $5, unidad = $6, división = $7, licenciatura = $8, 
+              estado = $9, correoinstitucional = $10, observaciones = $11
+          WHERE id = $12 
+          RETURNING *`;
+  
+        values = [
+          matricula,
+          password,
+          nombre,
+          apellidop,
+          apellidom,
+          unidad,
+          división,
+          licenciatura,
+          estado,
+          correoinstitucional,
+          observaciones,
+          id,
+        ];
+      } else {
+        // Si la contraseña está vacía, no la incluimos en la actualización
+        query = `
+          UPDATE alumno 
+          SET matricula = $1, nombre = $2, apellidopaterno = $3, 
+              apellidomaterno = $4, unidad = $5, división = $6, licenciatura = $7, 
+              estado = $8, correoinstitucional = $9, observaciones = $10
+          WHERE id = $11 
+          RETURNING *`;
+  
+        values = [
+          matricula,
+          nombre,
+          apellidop,
+          apellidom,
+          unidad,
+          división,
+          licenciatura,
+          estado,
+          correoinstitucional,
+          observaciones,
+          id,
+        ];
+      }
+  
+      const result = await pool.query(query, values);
+  
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: "Alumno no encontrado" });
+      }
+  
+      return res.json(result.rows[0]);
     } catch (error) {
-        next(error);
+      console.error("Error al actualizar alumno:", error);
+      next(error);
     }
-}
+  };
 
 module.exports =  {
     getAllAlumnos,

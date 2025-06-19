@@ -7,13 +7,15 @@ import styled from 'styled-components';
 import {TitutuloSecciones,FormularioRegistroSecciones,Select,Input2, ContenedorBoton,FormularioRegistro} from '../elementos/ElementosDeFormulario'
 import imagen1 from '../imagenes/motasPantera4.png'
 import BotonAtras from '../elementos/BotonAtras';
+
+
 const ImagenMotas = styled.img`
     
     position: absolute; /* Coloca el contenedor en la posición absoluta */
     top: 12%; /* Alínea la imagen al borde superior */
     left: 76%; /* Alínea la imagen al borde izquierdo */
-    width: 24%; /* Ocupa todo el ancho de la pantalla */
-    height: 80%; /* Ocupa todo el alto de la pantalla */
+    width: 75% 5%; /* Ocupa todo el ancho de la pantalla */
+    height: 120%; /* Ocupa todo el alto de la pantalla */
   
     z-index: -1; /* Envía la imagen detrás del formulario */
     @media (max-width: 768px) {
@@ -24,40 +26,49 @@ const ImagenMotas = styled.img`
         }
 
 `;
-const ContraseñaOlvidada = () => {
+const RegistrarReporte = () => {
+    
     const navigate = useNavigate();
-
+          
     return (  
         <>
         <Helmet>
-              <title>¡OOPS! Contraseña Olvidada</title>
+              <title>Registrar Reporte</title>
           </Helmet>
           
         <Header>
               <ContenedorHeader>
-                  <Titulo>¡OOPS! Alguién Olvido su Contraseña ?</Titulo>
+                  <Titulo>Registro de Reporte</Titulo>
                   </ContenedorHeader>
         </Header>
+           
+        <BotonAtras ruta="/reportes"/>
+
+
         <ImagenMotas src={imagen1} alt="MotasUam" />
-
-        <BotonAtras ruta="/inicio-empleado"/>
-
-
         <FormularioRegistro>
 		<FormularioRegistroSecciones>
-	<TitutuloSecciones>Ingresa los datos del Alumno para buscar</TitutuloSecciones>	
-        Usuario<Input2  type="text" 
-                name="nombre" 
-                placeholder="Nombre(s): Ej: Bryann Uriel" />
-         Correo Institucional<Input2  type="email" 
-                name="correoInstitucional" 
-                placeholder="Correo Electrónico Institucional: Ej: bryann.gutierrez@cua.uam.mx" />
-            </FormularioRegistroSecciones>
+	<TitutuloSecciones>Datos de Reporte</TitutuloSecciones>
 
         
+        Id Material<Input2  type="text" 
+                name="idMaterial" 
+                placeholder="Id: Ej: 2209999999" />
+        Fecha<Input2 type="date" 
+                name="fecha-registro" 
+                placeholder="Selecciona una fecha" />
+        hora<Input2 type="time" 
+                name="fecha-registro" 
+                placeholder="Selecciona una fecha" />
+        Descripción<Input2  type="text" 
+                name="Descripcion-producto" 
+                placeholder="Id: Ej: Breve descripción" />
+            </FormularioRegistroSecciones>
+
+            
 				
 	        <ContenedorBoton>
-	                <Boton as="button" primario type="submit" onClick={() => navigate("/contraseña-recupera")}>Buscar Alumno</Boton>
+	                <Boton as="button" primario type="submit" onClick={() => navigate("/inicio-empleado")}>Registrar Reporte</Boton>
 		</ContenedorBoton>
 	</FormularioRegistro>
   
@@ -67,5 +78,4 @@ const ContraseñaOlvidada = () => {
     );
 }
  
-export default ContraseñaOlvidada
-
+export default RegistrarReporte

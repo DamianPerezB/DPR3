@@ -41,6 +41,43 @@ const createPrestamo = async (req, res, next) => {
             tipoPrestamo
         } = req.body;
 
+        // Validación 1: ID préstamo existente
+        const prestamoExistente = await pool.query("SELECT * FROM prestamo WHERE id = $1", [id]);
+        if (prestamoExistente.rows.length > 0) {
+            return res.status(400).json({ message: "El ID del préstamo ya existe" });
+        }
+
+        // Validación 2: Alumno existente
+        const alumno = await pool.query("SELECT * FROM alumno WHERE id = $1", [idAlumno]);
+        if (alumno.rows.length === 0) {
+            return res.status(400).json({ message: "La matrícula no existe" });
+        }
+
+        // Validación 3: Empleado existente
+        const empleado = await pool.query("SELECT * FROM empleado WHERE id = $1", [idEmpleado]);
+        if (empleado.rows.length === 0) {
+            return res.status(400).json({ message: "El empleado no existe" });
+        }
+
+        // Validación 4: Fecha
+        if (new Date(fechaDevolucion) < new Date(fechaPrestamo)) {
+            return res.status(400).json({ message: "La fecha de devolución no puede ser menor que la de préstamo" });
+        }
+
+        // Validación 5: Cantidad disponible
+        const material = await pool.query("SELECT cantidad FROM material WHERE id = $1", [idMaterial]);
+        if (material.rows.length === 0) {
+            return res.status(400).json({ message: "El material no existe" });
+        }
+
+        if (material.rows[0].cantidad < cantidad) {
+            return res.status(400).json({ message: "Cantidad solicitada mayor a la existente" });
+        }
+
+        // Descontar material del inventario
+        await pool.query("UPDATE material SET cantidad = cantidad - $1 WHERE id = $2", [cantidad, idMaterial]);
+
+        // Insertar préstamo
         const result = await pool.query(
             `INSERT INTO prestamo 
             (ID, IdAlumno, IdEmpleado, EstadoPrestamo, FechaPrestamo, FechaDevolucion, 
@@ -49,21 +86,21 @@ const createPrestamo = async (req, res, next) => {
             RETURNING *`,
             [
                 id,
-            idAlumno,
-            idEmpleado,
-            estadoPrestamo,
-            fechaPrestamo,
-            fechaDevolucion,
-            idMaterial,
-            cantidad,
-            uea,
-            grupo,
-            observaciones,
-            tipoPrestamo
+                idAlumno,
+                idEmpleado,
+                estadoPrestamo,
+                fechaPrestamo,
+                fechaDevolucion,
+                idMaterial,
+                cantidad,
+                uea,
+                grupo,
+                observaciones,
+                tipoPrestamo
             ]
         );
 
-        res.json(result.rows[0]);
+        res.status(201).json(result.rows[0]);
     } catch (error) {
         next(error);
     }

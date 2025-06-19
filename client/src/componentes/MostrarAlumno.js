@@ -48,6 +48,7 @@ const InputBusqueda = styled.input`
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
+  aling: center
 `;
 
 const BotonEditar = styled.button`
@@ -57,58 +58,56 @@ const BotonEditar = styled.button`
   color: white;
   border-radius: 7px;
   cursor: pointer;
-  margin-right: 5px;
   &:hover {
     background-color: #ec971f;
   }
 `;
 
-
-const Permisos = () => {
+const MostrarAlumnos = () => {
   const navigate = useNavigate();
-  const [empleados, setEmpleados] = useState([]);
+  const [alumnos, setAlumnos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const obtenerEmpleados = async () => {
+  const obtenerAlumnos = async () => {
     try {
-      const response = await fetch("http://localhost:4000/empleados");
+      const response = await fetch("http://localhost:4000/alumnos");
       const data = await response.json();
-      setEmpleados(data);
+      setAlumnos(data);
     } catch (error) {
-      console.error("Error al obtener empleados:", error);
+      console.error("Error al obtener alumnos:", error);
     }
   };
 
   useEffect(() => {
-    obtenerEmpleados();
+    obtenerAlumnos();
   }, []);
 
-  const empleadosFiltrados = empleados.filter((empleado) => {
+  const alumnosFiltrados = alumnos.filter((alumno) => {
     const termino = busqueda.toLowerCase();
     return (
-      empleado.noeconomico.toString().includes(termino) ||
-      empleado.nombre.toLowerCase().includes(termino)
+      alumno.matricula.toLowerCase().includes(termino) ||
+      alumno.nombre.toLowerCase().includes(termino)
     );
   });
 
   return (
     <>
       <Helmet>
-        <title>Mostrar Empleados</title>
+        <title>Mostrar Alumnos</title>
       </Helmet>
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Gestión de Permisos</Titulo>
+          <Titulo>Listado de Alumnos</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/inicio-empleado" />
+      <BotonAtras ruta="/mostrar-usuarios" />
 
       <ContenedorBusqueda>
         <InputBusqueda
           type="text"
-          placeholder="Buscar por número económico o nombre..."
+          placeholder="Buscar por matrícula o nombre..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
@@ -117,26 +116,38 @@ const Permisos = () => {
       <Tabla>
         <EncabezadoTabla>
           <FilaTabla>
-            <CeldaEncabezado>Número Económico</CeldaEncabezado>
+            <CeldaEncabezado>Matrícula</CeldaEncabezado>
             <CeldaEncabezado>Nombre</CeldaEncabezado>
             <CeldaEncabezado>Apellido Paterno</CeldaEncabezado>
             <CeldaEncabezado>Apellido Materno</CeldaEncabezado>
-            <CeldaEncabezado>Tipo</CeldaEncabezado>
+            <CeldaEncabezado>Unidad</CeldaEncabezado>
+            <CeldaEncabezado>División</CeldaEncabezado>
+            <CeldaEncabezado>Licenciatura</CeldaEncabezado>
+            <CeldaEncabezado>Estado</CeldaEncabezado>
+            <CeldaEncabezado>Correo Institucional</CeldaEncabezado>
+            <CeldaEncabezado>Observaciones</CeldaEncabezado>
+            <CeldaEncabezado>Sanción</CeldaEncabezado>
             <CeldaEncabezado>Acciones</CeldaEncabezado>
           </FilaTabla>
         </EncabezadoTabla>
 
         <CuerpoTabla>
-          {empleadosFiltrados.map((empleado) => (
-            <FilaTabla key={empleado.noeconomico}>
-              <Celda>{empleado.noeconomico}</Celda>
-              <Celda>{empleado.nombre}</Celda>
-              <Celda>{empleado.apellidopaterno}</Celda>
-              <Celda>{empleado.apellidomaterno}</Celda>
-              <Celda>{empleado.tipo_nombre}</Celda>
+          {alumnosFiltrados.map((alumno) => (
+            <FilaTabla key={alumno.matricula}>
+              <Celda>{alumno.matricula}</Celda>
+              <Celda>{alumno.nombre}</Celda>
+              <Celda>{alumno.apellidopaterno}</Celda>
+              <Celda>{alumno.apellidomaterno}</Celda>
+              <Celda>{alumno.unidad}</Celda>
+              <Celda>{alumno.división}</Celda>
+              <Celda>{alumno.licenciatura}</Celda>
+              <Celda>{alumno.estado}</Celda>
+              <Celda>{alumno.correoinstitucional}</Celda>
+              <Celda>{alumno.observaciones}</Celda>
+              <Celda>{alumno.sancion}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-permiso/${empleado.noeconomico}`)}>
-                  Modificar Permisos
+                <BotonEditar onClick={() => navigate(`/editar-alumno/${alumno.matricula}`)}>
+                  Editar
                 </BotonEditar>
               </Celda>
             </FilaTabla>
@@ -147,4 +158,4 @@ const Permisos = () => {
   );
 };
 
-export default Permisos;
+export default MostrarAlumnos;

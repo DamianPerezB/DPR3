@@ -1,9 +1,9 @@
-import {Header, Titulo, ContenedorHeader, Subtitulo} from '../elementos/Header';
+import { Header, Titulo, ContenedorHeader, Subtitulo } from '../elementos/Header';
 import Boton from '../elementos/Boton';
-import React, {useState} from 'react';
-import {Helmet} from 'react-helmet'; 
-import {useNavigate} from 'react-router-dom';
-import styled from 'styled-components'; 
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import BotonAtras from '../elementos/BotonAtras';
 import UsuarioEmpleado from '../imagenes/UsuarioEmpleado.png'
 import UsuarioAlumno from '../imagenes/UsuarioAlumno.png'
@@ -37,35 +37,35 @@ const ContenedorBotonRegistro = styled.div`
 
 
 
-const RegistroUsuarios =() =>{
-   const navigate = useNavigate();
-  
-    return(
-        <>
-          <Helmet>
-				<title>Registrar Usuarios</title>
-			</Helmet>
-			
-        <Header>
-				<ContenedorHeader>
-					<Titulo>Registro de Usuarios</Titulo>
-					</ContenedorHeader>
-			</Header>
-         
-        <BotonAtras ruta="/usuarios"/>
+const RegistroUsuarios = () => {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <Helmet>
+        <title>Registrar Usuarios</title>
+      </Helmet>
+
+      <Header>
+        <ContenedorHeader>
+          <Titulo>Registro de Usuarios</Titulo>
+        </ContenedorHeader>
+      </Header>
+
+      <BotonAtras ruta="/usuarios" />
 
 
 
-			<ContenedorImagen>
-      <ImagenLogo1 src={UsuarioAlumno} alt="LogoUam" />
-      <ImagenLogo1 src={UsuarioEmpleado} alt="LogoUam" />
+      <ContenedorImagen>
+        <ImagenLogo1 src={UsuarioAlumno} alt="LogoUam" />
+        <ImagenLogo1 src={UsuarioEmpleado} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/registro-alumno")}> Alumno</Boton>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/registro-empleado")}>Administrativo</Boton>
-			</ContenedorBotonRegistro>
-        </>
-    );
+        <Boton as="button" primario type="submit" onClick={() => navigate("/registro-alumno")}> Alumno</Boton>
+        <Boton as="button" primario type="submit" onClick={() => navigate("/registro-empleado")}>Administrativo</Boton>
+      </ContenedorBotonRegistro>
+    </>
+  );
 
 }
 

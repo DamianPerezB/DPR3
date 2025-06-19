@@ -5,9 +5,9 @@ import {
   Subtitulo,
 } from "../elementos/Header";
 import Boton from "../elementos/Boton";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import {
   TitutuloSecciones,
@@ -35,12 +35,14 @@ const ImagenMotas = styled.img`
   }
 `;
 
-const RegistrarAlumno = () => {
+const EditarAlumno = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [formData, setFormData] = useState({
     matricula: "",
     password: "",
+    repeatPassword: "",
     nombre: "",
     apellidop: "",
     apellidom: "",
@@ -51,6 +53,39 @@ const RegistrarAlumno = () => {
     correoinstitucional: "",
     observaciones: "",
   });
+
+  useEffect(() => {
+    const fetchAlumno = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/alumno/${id}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Datos recibidos:", data);
+
+          setFormData({
+            matricula: data.matricula || "",
+            password: "",
+            repeatPassword: "",
+            nombre: data.nombre || "",
+            apellidop: data.apellidopaterno || "",
+            apellidom: data.apellidomaterno || "",
+            unidad: data.unidad ? String(data.unidad) : "",
+            división: data.división || "CNI",
+            licenciatura: data.licenciatura ? String(data.licenciatura) : "",
+            estado: data.estado ? String(data.estado) : "",
+            correoinstitucional: data.correoinstitucional || "",
+            observaciones: data.observaciones || "",
+          });
+        }
+      } catch (error) {
+        console.error("Error al cargar alumno:", error);
+      }
+    };
+
+    if (id) {
+      fetchAlumno();
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,40 +111,56 @@ const RegistrarAlumno = () => {
     }
 
     if (formData.matricula.length !== 10) {
-      alert("El formato de la matricula es incorrecto.");
+      alert("El formato de la matrícula es incorrecto.");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:4000/alumno", {
-        method: "POST",
+      // Construir el cuerpo de la solicitud
+      const alumnoData = {
+        ...formData,
+        sancion: 0,
+      };
+
+      // Si no se proporcionó contraseña, eliminar del cuerpo para no sobreescribir
+      if (!formData.password) {
+        delete alumnoData.password;
+      }
+
+      const response = await fetch(`http://localhost:4000/alumno/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, sancion: 0 }),
+        body: JSON.stringify(alumnoData),
       });
 
-      const data = await response.json();
-      console.log("Alumno registrado:", data);
-      alert("Alumno registrado con éxito");
-      navigate("/registro-usuarios");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Alumno actualizado:", data);
+        alert("Datos del alumno actualizados con éxito");
+      } else {
+        const errorData = await response.json();
+        console.error("Error al actualizar:", errorData);
+        alert("Error al actualizar al alumno");
+      }
     } catch (error) {
-      console.error("Error al registrar:", error);
-      alert("Error al registrar al alumno");
+      console.error("Error al enviar la solicitud PUT:", error);
+      alert("Ocurrió un error al actualizar al alumno");
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Registrar Alumno</title>
+        <title>Edición de alumno</title>
       </Helmet>
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Registro de Alumno</Titulo>
+          <Titulo>Edición de alumno</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/registro-usuarios" />
+      <BotonAtras ruta="/mostrar-alumnos" />
 
       <ImagenMotas src={imagen1} alt="MotasUam" />
 
@@ -152,8 +203,7 @@ const RegistrarAlumno = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Contraseña"
-            required
+            placeholder="Contraseña (dejar en blanco para no cambiar)"
           />
           <Input2
             type="password"
@@ -161,7 +211,6 @@ const RegistrarAlumno = () => {
             value={formData.repeatPassword}
             onChange={handleChange}
             placeholder="Repetir Contraseña"
-            required
           />
         </FormularioRegistroSecciones>
 
@@ -236,7 +285,7 @@ const RegistrarAlumno = () => {
 
         <ContenedorBoton>
           <Boton as="button" type="submit">
-            Registrar Alumno
+            Actualizar Datos
           </Boton>
         </ContenedorBoton>
       </FormularioRegistro>
@@ -244,4 +293,4 @@ const RegistrarAlumno = () => {
   );
 };
 
-export default RegistrarAlumno;
+export default EditarAlumno;

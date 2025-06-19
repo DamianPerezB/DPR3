@@ -64,7 +64,7 @@ const BotonEditar = styled.button`
 `;
 
 
-const Permisos = () => {
+const MostrarEmpleados = () => {
   const navigate = useNavigate();
   const [empleados, setEmpleados] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -99,11 +99,11 @@ const Permisos = () => {
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Gestión de Permisos</Titulo>
+          <Titulo>Listado de Empleados</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/inicio-empleado" />
+      <BotonAtras ruta="/mostrar-usuarios" />
 
       <ContenedorBusqueda>
         <InputBusqueda
@@ -121,6 +121,8 @@ const Permisos = () => {
             <CeldaEncabezado>Nombre</CeldaEncabezado>
             <CeldaEncabezado>Apellido Paterno</CeldaEncabezado>
             <CeldaEncabezado>Apellido Materno</CeldaEncabezado>
+            <CeldaEncabezado>Correo Institucional</CeldaEncabezado>
+            <CeldaEncabezado>Estado</CeldaEncabezado>
             <CeldaEncabezado>Tipo</CeldaEncabezado>
             <CeldaEncabezado>Acciones</CeldaEncabezado>
           </FilaTabla>
@@ -133,10 +135,12 @@ const Permisos = () => {
               <Celda>{empleado.nombre}</Celda>
               <Celda>{empleado.apellidopaterno}</Celda>
               <Celda>{empleado.apellidomaterno}</Celda>
+              <Celda>{empleado.correoinstitucional}</Celda>
+              <Celda>{empleado.estado_nombre}</Celda>
               <Celda>{empleado.tipo_nombre}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-permiso/${empleado.noeconomico}`)}>
-                  Modificar Permisos
+                <BotonEditar onClick={() => navigate(`/editar-empleado/${empleado.noeconomico}`)}>
+                  Editar
                 </BotonEditar>
               </Celda>
             </FilaTabla>
@@ -147,4 +151,4 @@ const Permisos = () => {
   );
 };
 
-export default Permisos;
+export default MostrarEmpleados;

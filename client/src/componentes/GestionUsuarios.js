@@ -40,7 +40,7 @@ const ContenedorBotonRegistro = styled.div`
 
 
 
-const MaterialesDisponibles =() =>{
+const GestionUsuarios =() =>{
     const navigate = useNavigate(); 
     return(
         <>
@@ -62,13 +62,13 @@ const MaterialesDisponibles =() =>{
       </ContenedorImagen>
       <ContenedorBotonRegistro>
 					<Boton as="button" primario type="submit" onClick={() => navigate("/registro-usuarios")} > Añadir Usuario</Boton>
-					<Boton as="button" primario type="submit"> Eliminar Usuario</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/eliminar-usuarios")}> Eliminar Usuario</Boton>
 			</ContenedorBotonRegistro>
       <ContenedorImagen>
       <ImagenLogo1 src={BuscarUsuario} alt="LogoUam" /> 
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit"> Mostrar Usuarios</Boton> 
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-usuarios")} > Mostrar Usuarios</Boton> 
 			</ContenedorBotonRegistro>
      
         </>
@@ -76,6 +76,4 @@ const MaterialesDisponibles =() =>{
 
 }
 
-export default MaterialesDisponibles;
-
-
+export default GestionUsuarios;

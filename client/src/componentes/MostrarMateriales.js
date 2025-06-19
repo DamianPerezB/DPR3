@@ -63,52 +63,51 @@ const BotonEditar = styled.button`
   }
 `;
 
-
-const Permisos = () => {
+const MostrarMateriales = () => {
   const navigate = useNavigate();
-  const [empleados, setEmpleados] = useState([]);
+  const [materiales, setMateriales] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const obtenerEmpleados = async () => {
+  const obtenerMateriales = async () => {
     try {
-      const response = await fetch("http://localhost:4000/empleados");
+      const response = await fetch("http://localhost:4000/materiales");
       const data = await response.json();
-      setEmpleados(data);
+      setMateriales(data);
     } catch (error) {
-      console.error("Error al obtener empleados:", error);
+      console.error("Error al obtener materiales:", error);
     }
   };
 
   useEffect(() => {
-    obtenerEmpleados();
+    obtenerMateriales();
   }, []);
 
-  const empleadosFiltrados = empleados.filter((empleado) => {
+  const materialesFiltrados = materiales.filter((material) => {
     const termino = busqueda.toLowerCase();
     return (
-      empleado.noeconomico.toString().includes(termino) ||
-      empleado.nombre.toLowerCase().includes(termino)
+      material.id.toLowerCase().includes(termino) ||
+      material.nombrematerial.toLowerCase().includes(termino)
     );
   });
 
   return (
     <>
       <Helmet>
-        <title>Mostrar Empleados</title>
+        <title>Mostrar Materiales</title>
       </Helmet>
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Gestión de Permisos</Titulo>
+          <Titulo>Listado de Materiales</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/inicio-empleado" />
+      <BotonAtras ruta="/materiales" />
 
       <ContenedorBusqueda>
         <InputBusqueda
           type="text"
-          placeholder="Buscar por número económico o nombre..."
+          placeholder="Buscar por ID o nombre..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
@@ -117,26 +116,36 @@ const Permisos = () => {
       <Tabla>
         <EncabezadoTabla>
           <FilaTabla>
-            <CeldaEncabezado>Número Económico</CeldaEncabezado>
+            <CeldaEncabezado>ID</CeldaEncabezado>
+            <CeldaEncabezado>Inventario UAM</CeldaEncabezado>
+            <CeldaEncabezado>Inventario Coordinación</CeldaEncabezado>
+            <CeldaEncabezado>Marca</CeldaEncabezado>
+            <CeldaEncabezado>Modelo</CeldaEncabezado>
+            <CeldaEncabezado>N° Serie</CeldaEncabezado>
             <CeldaEncabezado>Nombre</CeldaEncabezado>
-            <CeldaEncabezado>Apellido Paterno</CeldaEncabezado>
-            <CeldaEncabezado>Apellido Materno</CeldaEncabezado>
+            <CeldaEncabezado>Cantidad</CeldaEncabezado>
+            <CeldaEncabezado>Estado</CeldaEncabezado>
             <CeldaEncabezado>Tipo</CeldaEncabezado>
             <CeldaEncabezado>Acciones</CeldaEncabezado>
           </FilaTabla>
         </EncabezadoTabla>
 
         <CuerpoTabla>
-          {empleadosFiltrados.map((empleado) => (
-            <FilaTabla key={empleado.noeconomico}>
-              <Celda>{empleado.noeconomico}</Celda>
-              <Celda>{empleado.nombre}</Celda>
-              <Celda>{empleado.apellidopaterno}</Celda>
-              <Celda>{empleado.apellidomaterno}</Celda>
-              <Celda>{empleado.tipo_nombre}</Celda>
+          {materialesFiltrados.map((material) => (
+            <FilaTabla key={material.id}>
+              <Celda>{material.id}</Celda>
+              <Celda>{material.inventario_uam}</Celda>
+              <Celda>{material.inventario_coordinacion}</Celda>
+              <Celda>{material.marca}</Celda>
+              <Celda>{material.modelo}</Celda>
+              <Celda>{material.numeroserie}</Celda>
+              <Celda>{material.nombrematerial}</Celda>
+              <Celda>{material.cantidad}</Celda>
+              <Celda>{material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}</Celda>
+              <Celda>{material.tipo === 0 ? "Inventariado" : "Consumible"}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-permiso/${empleado.noeconomico}`)}>
-                  Modificar Permisos
+                <BotonEditar onClick={() => navigate(`/editar-material/${material.id}`)}>
+                  Editar
                 </BotonEditar>
               </Celda>
             </FilaTabla>
@@ -147,4 +156,4 @@ const Permisos = () => {
   );
 };
 
-export default Permisos;
+export default MostrarMateriales;

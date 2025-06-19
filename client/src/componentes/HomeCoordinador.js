@@ -1,10 +1,8 @@
-import {Header, Titulo, ContenedorHeader, Subtitulo} from '../elementos/Header';
+import {Header, Titulo, ContenedorHeader} from '../elementos/Header';
 import Boton from '../elementos/Boton';
-import React, {useState} from 'react';
 import {Helmet} from 'react-helmet'; 
 import {useNavigate} from 'react-router-dom';
-import styled from 'styled-components';
-import pantera1 from '../imagenes/Pantera1.png'
+import styled from 'styled-components'; 
 import Perfil from '../imagenes/HuellaPantera.png'
 import Historico from'../imagenes/Historico.png'
 import Orden from '../imagenes/orden.png'
@@ -14,10 +12,11 @@ import Reporte from '../imagenes/reporte.png';
 import Aviso from '../imagenes/aviso.png'
 import Permiso from '../imagenes/permiso.png'
 import Prestamo from '../imagenes/Prestamo.png'
+import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenLogo1 = styled.img`
     margin-right: 2%;
-    width: 10%; /* La imagen es un 30% más pequeña */
+    width: 35%; /* La imagen es un 30% más pequeña */
     @media (max-width: 768px) {
        margin-top: -400px; 
         width: 40%; /* Ocupa todo el ancho del contenedor en pantallas pequeñas */
@@ -58,6 +57,7 @@ const HomeCoordinador =() =>{
 					<Titulo>Inicio de Empleado</Titulo>
 					</ContenedorHeader>
 			</Header>
+            <BotonAtras ruta="/"/>
 	  <ContenedorImagen>
       <ImagenLogo1 src={Orden} alt="LogoUam" />
       <ImagenLogo1 src={Historico} alt="LogoUam" />
@@ -81,7 +81,7 @@ const HomeCoordinador =() =>{
       <ImagenLogo1 src={Aviso} alt="LogoUam" /> 
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-          <Boton as="button" primario type="submit" onClick={() => navigate("/avisos")} >Avisos</Boton>
+          <Boton as="button" primario type="submit" onClick={() => navigate("/avisos")} >Sanciones</Boton>
           <Boton as="button" primario type="submit" onClick={() => navigate("/reportes")} style={{marginLeft:"-40%"}}>Reportes</Boton>			
       </ContenedorBotonRegistro>
 
@@ -91,7 +91,7 @@ const HomeCoordinador =() =>{
       </ContenedorImagen>
       <ContenedorBotonRegistro>
           <Boton as="button" primario type="submit" onClick={() => navigate("/permisos")} >Permisos</Boton>
-          <Boton as="button" primario type="submit" onClick={() => navigate("/registro-usuarios")} >Prestamos</Boton>
+          <Boton as="button" primario type="submit" onClick={() => navigate("/prestamos")} >Prestamos</Boton>
       </ContenedorBotonRegistro>
       
       <ContenedorImagen>
@@ -106,5 +106,3 @@ const HomeCoordinador =() =>{
 }
 
 export default HomeCoordinador;
-
-

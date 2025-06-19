@@ -16,33 +16,33 @@ import imagen1 from "../imagenes/motasPantera4.png";
 import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenMotas = styled.img`
-  position: absolute; /* Coloca el contenedor en la posición absoluta */
-  top: 12%; /* Alínea la imagen al borde superior */
-  left: 76%; /* Alínea la imagen al borde izquierdo */
-  width: 75% 5%; /* Ocupa todo el ancho de la pantalla */
-  height: 120%; /* Ocupa todo el alto de la pantalla */
-
-  z-index: -1; /* Envía la imagen detrás del formulario */
+  position: absolute;
+  top: 12%;
+  left: 76%;
+  width: 75% 5%;
+  height: 120%;
+  z-index: -1;
   @media (max-width: 768px) {
-    margin-left: 0; /* Elimina el margen izquierdo en pantallas pequeñas */
-    width: 24%; /* Ocupa todo el ancho del contenedor en pantallas pequeñas */
+    margin-left: 0;
+    width: 24%;
     height: 80%;
-    left: 76%; /* Alínea la imagen al borde izquierdo */
+    left: 76%;
   }
 `;
+
 const RegistrarEmpleado = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     noEconomico: "",
     password: "",
+    repeatPassword: "",
     nombre: "",
-    apellidop: "",
-    apellidom: "",
+    apellidoPaterno: "",
+    apellidoMaterno: "",
     correoInstitucional: "",
     estado: "0",
-    tipo: "",
-    permisos: "",
+    tipo: ""
   });
 
   const handleChange = (e) => {
@@ -69,7 +69,7 @@ const RegistrarEmpleado = () => {
     }
 
     if (formData.noEconomico.length !== 5) {
-      alert("El número economico no es valido.");
+      alert("El número económico no es válido.");
       return;
     }
 
@@ -77,18 +77,19 @@ const RegistrarEmpleado = () => {
       const response = await fetch("http://localhost:4000/empleado", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
       console.log("Empleado registrado:", data);
       alert("Empleado registrado con éxito");
-      navigate("/usuarios");
+      navigate("/registro-usuarios");
     } catch (error) {
       console.error("Error al registrar:", error);
       alert("Error al registrar al Empleado");
     }
   };
+
   return (
     <>
       <Helmet>
@@ -101,7 +102,6 @@ const RegistrarEmpleado = () => {
         </ContenedorHeader>
       </Header>
       <ImagenMotas src={imagen1} alt="MotasUam" />
-
       <BotonAtras ruta="/registro-usuarios" />
 
       <FormularioRegistro onSubmit={handleSubmit}>
@@ -118,19 +118,19 @@ const RegistrarEmpleado = () => {
           />
           <Input2
             type="text"
-            name="apellidop"
-            value={formData.apellidop}
+            name="apellidoPaterno"
+            value={formData.apellidoPaterno}
             onChange={handleChange}
-            placeholder="apellidop"
             required
+            placeholder="Apellido Paterno"
           />
           <Input2
             type="text"
-            name="apellidom"
-            value={formData.apellidom}
+            name="apellidoMaterno"
+            value={formData.apellidoMaterno}
             onChange={handleChange}
-            placeholder="apellidom"
             required
+            placeholder="Apellido Materno"
           />
         </FormularioRegistroSecciones>
 
@@ -162,7 +162,7 @@ const RegistrarEmpleado = () => {
             name="noEconomico"
             value={formData.noEconomico}
             onChange={handleChange}
-            placeholder="noEconomico"
+            placeholder="Número económico"
             required
           />
           Tipo de Cargo
@@ -174,7 +174,7 @@ const RegistrarEmpleado = () => {
           >
             <option value="">Seleccione su cargo</option>
             <option value="0">Coordinador</option>
-            <option value="1">Tecnico</option>
+            <option value="1">Técnico</option>
             <option value="2">Profesor</option>
           </Select>
           Correo Institucional
@@ -186,23 +186,6 @@ const RegistrarEmpleado = () => {
             placeholder="Correo Institucional"
             required
           />
-        </FormularioRegistroSecciones>
-
-        <FormularioRegistroSecciones>
-          <Select
-            name="permisos"
-            value={formData.permisos}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione el tipo de Permiso</option>
-            <option value="0">Gestor de materiales</option>
-            <option value="1">Gestor de reportes</option>
-            <option value="2">Gestor de avisos</option>
-            <option value="3">Gestor de permisos</option>
-            <option value="4">Gestor de adeudos</option>
-            <option value="5">Gestor de usuarios</option>
-          </Select>
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>

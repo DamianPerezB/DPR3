@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`
@@ -50,24 +50,22 @@ const InputBusqueda = styled.input`
   font-size: 16px;
 `;
 
-const BotonEditar = styled.button`
+const BotonEliminar = styled.button`
   padding: 8px 12px;
-  background-color: #f0ad4e;
+  background-color: #d9534f;
   border: none;
   color: white;
   border-radius: 7px;
   cursor: pointer;
-  margin-right: 5px;
   &:hover {
-    background-color: #ec971f;
+    background-color: #c9302c;
   }
 `;
 
-
-const Permisos = () => {
-  const navigate = useNavigate();
+const EliminarEmpleado = () => {
   const [empleados, setEmpleados] = useState([]);
   const [busqueda, setBusqueda] = useState("");
+  const navigate = useNavigate();
 
   const obtenerEmpleados = async () => {
     try {
@@ -76,6 +74,32 @@ const Permisos = () => {
       setEmpleados(data);
     } catch (error) {
       console.error("Error al obtener empleados:", error);
+    }
+  };
+
+  const handleEliminar = async (id) => {
+    const confirmar = window.confirm(
+      "¿Estás seguro de que deseas eliminar este empleado?"
+    );
+    if (!confirmar) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:4000/empleado/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setEmpleados((prev) => prev.filter((e) => e.noeconomico !== id));
+        alert("Empleado eliminado correctamente.");
+      } else {
+        alert("No se pudo eliminar al empleado.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar empleado:", error);
+      alert("Hubo un error al intentar eliminar al empleado.");
     }
   };
 
@@ -94,16 +118,16 @@ const Permisos = () => {
   return (
     <>
       <Helmet>
-        <title>Mostrar Empleados</title>
+        <title>Eliminar Empleados</title>
       </Helmet>
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Gestión de Permisos</Titulo>
+          <Titulo>Listado de Empleados</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/inicio-empleado" />
+      <BotonAtras ruta="/eliminar-usuarios" />
 
       <ContenedorBusqueda>
         <InputBusqueda
@@ -117,11 +141,11 @@ const Permisos = () => {
       <Tabla>
         <EncabezadoTabla>
           <FilaTabla>
-            <CeldaEncabezado>Número Económico</CeldaEncabezado>
+            <CeldaEncabezado>No. Económico</CeldaEncabezado>
             <CeldaEncabezado>Nombre</CeldaEncabezado>
             <CeldaEncabezado>Apellido Paterno</CeldaEncabezado>
             <CeldaEncabezado>Apellido Materno</CeldaEncabezado>
-            <CeldaEncabezado>Tipo</CeldaEncabezado>
+            <CeldaEncabezado>Correo Institucional</CeldaEncabezado>
             <CeldaEncabezado>Acciones</CeldaEncabezado>
           </FilaTabla>
         </EncabezadoTabla>
@@ -133,11 +157,13 @@ const Permisos = () => {
               <Celda>{empleado.nombre}</Celda>
               <Celda>{empleado.apellidopaterno}</Celda>
               <Celda>{empleado.apellidomaterno}</Celda>
-              <Celda>{empleado.tipo_nombre}</Celda>
+              <Celda>{empleado.correoinstitucional}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-permiso/${empleado.noeconomico}`)}>
-                  Modificar Permisos
-                </BotonEditar>
+                <BotonEliminar
+                  onClick={() => handleEliminar(empleado.noeconomico)}
+                >
+                  Eliminar
+                </BotonEliminar>
               </Celda>
             </FilaTabla>
           ))}
@@ -147,4 +173,4 @@ const Permisos = () => {
   );
 };
 
-export default Permisos;
+export default EliminarEmpleado;

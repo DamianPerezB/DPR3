@@ -1,13 +1,12 @@
-import {Header, Titulo, ContenedorHeader, Subtitulo} from '../elementos/Header';
+import {Header, Titulo, ContenedorHeader} from '../elementos/Header';
 import Boton from '../elementos/Boton';
-import React, {useState} from 'react';
 import {Helmet} from 'react-helmet'; 
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import Materiales from '../imagenes/orden.png'
 import Historico from '../imagenes/Historico.png'
-import Aviso from '../imagenes/aviso.png'
 import Perfil from '../imagenes/HuellaPantera.png'
+import BotonAtras from "../elementos/BotonAtras";
 const ImagenLogo1 = styled.img`
     margin-right: 2%;
     width: 35%; /* La imagen es un 30% más pequeña */
@@ -17,7 +16,6 @@ const ImagenLogo1 = styled.img`
     }
 
 `;
-
 
 const ContenedorImagen = styled.div`
 	height: 100%;
@@ -50,21 +48,20 @@ const HomeAlumno =() =>{
 					<Titulo>Inicio de Alumno</Titulo>
 					</ContenedorHeader>
 			</Header>
+      <BotonAtras ruta="/" />
 			<ContenedorImagen>
       <ImagenLogo1 src={Materiales} alt="LogoUam" />
       <ImagenLogo1 src={Historico} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit"> Materiales Disponibles</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-materiales-a")}> Materiales Disponibles</Boton>
 					<Boton as="button" primario type="submit"> Historico</Boton>
 			</ContenedorBotonRegistro>
       <ContenedorImagen>
-      <ImagenLogo1 src={Aviso} alt="LogoUam" />
       <ImagenLogo1 src={Perfil} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/")}> Avisos</Boton>
-					<Boton as="button" primario type="submit"> Pérfil</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/perfil-alumno")}> Pérfil</Boton>
 			</ContenedorBotonRegistro>
       
         </>

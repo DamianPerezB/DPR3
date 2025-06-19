@@ -22,35 +22,27 @@ const ImagenMotas = styled.img`
     }
 `;
 
-const Perfil = () => {
+const PerfilAlumno = () => {
     const navigate = useNavigate();
-    const [empleado, setEmpleado] = useState(null);
-    const [permisos, setPermisos] = useState([]);
-    const empleadoId = 44321;
+    const [alumno, setAlumno] = useState(null);
+    const alumnoId = 2153034522;
 
     useEffect(() => {
-        // Obtener datos del empleado
-        fetch(`http://localhost:4000/empleado/${empleadoId}`)
+        fetch(`http://localhost:4000/alumno/${alumnoId}`)
             .then(response => response.json())
-            .then(data => setEmpleado(data))
-            .catch(error => console.error('Error al obtener empleado:', error));
-
-        // Obtener permisos del empleado
-        fetch(`http://localhost:4000/empleado/permisos/${empleadoId}`)
-            .then(response => response.json())
-            .then(data => setPermisos(data))
-            .catch(error => console.error('Error al obtener permisos:', error));
-    }, [empleadoId]);
+            .then(data => setAlumno(data))
+            .catch(error => console.error('Error al obtener alumno:', error));
+    }, [alumnoId]);
 
     return (
         <>
             <Helmet>
-                <title>Perfil</title>
+                <title>Perfil Alumno</title>
             </Helmet>
 
             <Header>
                 <ContenedorHeader>
-                    <Titulo>Perfil</Titulo>
+                    <Titulo>Perfil del Alumno</Titulo>
                 </ContenedorHeader>
             </Header>
 
@@ -58,27 +50,36 @@ const Perfil = () => {
 
             <FormularioRegistro>
                 <FormularioRegistroSecciones>
-                    <TitutuloSecciones>Datos del Empleado</TitutuloSecciones>
+                    <TitutuloSecciones>Datos del Alumno</TitutuloSecciones>
                     
-                    {empleado ? (
+                    {alumno ? (
                         <>
                             Nombre completo:
-                            <Input2 value={`${empleado.nombre} ${empleado.apellidopaterno} ${empleado.apellidomaterno}`} disabled />
-                            
-                            No. Económico:
-                            <Input2 value={empleado.noeconomico} disabled />
+                            <Input2 value={`${alumno.nombre} ${alumno.apellidopaterno} ${alumno.apellidomaterno}`} disabled />
+
+                            Matrícula:
+                            <Input2 value={alumno.matricula} disabled />
 
                             Correo institucional:
-                            <Input2 value={empleado.correoinstitucional} disabled />
+                            <Input2 value={alumno.correoinstitucional} disabled />
+
+                            Unidad:
+                            <Input2 value={alumno.unidad} disabled />
+
+                            División:
+                            <Input2 value={alumno.división} disabled />
+
+                            Licenciatura:
+                            <Input2 value={alumno.licenciatura} disabled />
 
                             Estado:
-                            <Input2 value={empleado.estado_nombre} disabled />
+                            <Input2 value={alumno.estado} disabled />
 
-                            Tipo:
-                            <Input2 value={empleado.tipo_nombre} disabled />
+                            Sanción:
+                            <Input2 value={alumno.sancion} disabled />
 
-                            Permisos:
-                            <Input2 value={permisos.join(', ')} disabled />
+                            Observaciones:
+                            <Input2 value={alumno.observaciones || 'Ninguna'} disabled />
                         </>
                     ) : (
                         <p>Cargando datos...</p>
@@ -86,7 +87,7 @@ const Perfil = () => {
                 </FormularioRegistroSecciones>
 
                 <ContenedorBoton>
-                    <Boton as="button" primario type="button" onClick={() => navigate("/inicio-empleado")}>
+                    <Boton as="button" primario type="button" onClick={() => navigate("/inicio-alumno")}>
                         Regresar al Menú
                     </Boton>
                 </ContenedorBoton>
@@ -95,4 +96,4 @@ const Perfil = () => {
     );
 };
 
-export default Perfil;
+export default PerfilAlumno;

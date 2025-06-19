@@ -3,12 +3,10 @@ import Boton from '../elementos/Boton';
 import React, {useState} from 'react';
 import {Helmet} from 'react-helmet'; 
 import {useNavigate} from 'react-router-dom';
-import styled from 'styled-components';
-import pantera1 from '../imagenes/Pantera1.png'
+import styled from 'styled-components'; 
 import BotonAtras from '../elementos/BotonAtras';
-import AnadirReporte from '../imagenes/AgregarReporte.png'
-import EliminarReporte from '../imagenes/EliminarReporte.png'
-import BuscarReporte from '../imagenes/BuscarReporte.png'
+import UsuarioEmpleado from '../imagenes/UsuarioEmpleado.png'
+import UsuarioAlumno from '../imagenes/UsuarioAlumno.png'
 
 const ImagenLogo1 = styled.img`
     margin-right: 2%;
@@ -39,42 +37,38 @@ const ContenedorBotonRegistro = styled.div`
 
 
 
-const Reportes =() =>{
-
+const MostrarUsuarios =() =>{
    const navigate = useNavigate();
-
+  
     return(
         <>
           <Helmet>
-				<title>Gestión de Reportes</title>
+				<title>Mostrar Usuarios</title>
 			</Helmet>
 			
         <Header>
 				<ContenedorHeader>
-					<Titulo>Gestión de Reportes</Titulo>
+					<Titulo>Visualización de Usuarios</Titulo>
 					</ContenedorHeader>
 			</Header>
-            <BotonAtras ruta="/inicio-empleado"/>
+         
+        <BotonAtras ruta="/usuarios"/>
 
 
-            <ContenedorImagen>
-      <ImagenLogo1 src={AnadirReporte} alt="LogoUam" />
-      <ImagenLogo1 src={EliminarReporte} alt="LogoUam" />
+
+			<ContenedorImagen>
+      <ImagenLogo1 src={UsuarioAlumno} alt="LogoUam" />
+      <ImagenLogo1 src={UsuarioEmpleado} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/registro-reporte")} > Añadir Reporte</Boton>
-					<Boton as="button" primario type="submit"> Eliminar Reporte</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-alumnos")}> Alumno</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-empleados")}>Administrativo</Boton>
 			</ContenedorBotonRegistro>
-      <ContenedorImagen>
-      <ImagenLogo1 src={BuscarReporte} alt="LogoUam" /> 
-      </ContenedorImagen>
-      <ContenedorBotonRegistro>
-					<Boton as="button" primario type="submit"> Mostrar Reportes</Boton> 
-			</ContenedorBotonRegistro>
-     
         </>
     );
 
 }
 
-export default Reportes;
+export default MostrarUsuarios;
+
+

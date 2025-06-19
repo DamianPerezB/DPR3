@@ -1,12 +1,10 @@
-
 import { Header, Titulo, ContenedorHeader } from '../elementos/Header';
 import Boton from '../elementos/Boton';
-import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Formulario, Input, ContenedorBoton } from '../elementos/ElementosDeFormulario'
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import imagen from '../imagenes/variacion5Cua.png'
+import { useNavigate } from "react-router-dom";
 
 const ImagenLogo1 = styled.img`
     width: 40%; /* La imagen es un 30% más pequeña */
@@ -34,40 +32,6 @@ const ContenedorTitulo = styled.div`
 
 const InicioSesion = () => {
 	const navigate = useNavigate();
-	const [correo, establecerCorreo] = useState('');
-	const [password, establecerPassword] = useState('');
-	const [estadoAlerta, cambiarEstadoAlerta] = useState(false);
-	const [alerta, cambiarAlerta] = useState({});
-	const handleSubmit = async (e) => {
-		e.preventDefault();	//Evita que el formulario se envie recagargando la pagina
-		try {
-			const response = await fetch('http://localhost:3000/api/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ email: correo, password }),
-			});
-
-			const data = await response.json();//conversion de json a objeto en js
-			if (response.ok) {
-				localStorage.setItem('token', data.token); // Guardar el token en localStorage
-				localStorage.setItem('tipo', data.tipo); // Guardar el tipo de usuario
-
-				// Redirigir según el tipo de usuario
-				if (data.tipo === 'alumno') {
-					navigate('/alumno'); // Ruta para alumnos
-				} else if (data.tipo === 'empleado') {
-					navigate('/empleado'); // Ruta para empleados
-				}
-			} else {
-				alert(data.message); // Mostrar mensaje de error
-			}
-		} catch (error) {
-			console.error(error);
-			alert('Error en el servidor');
-		}
-	};
 	return (
 
 		<>
@@ -90,18 +54,17 @@ const InicioSesion = () => {
 					type="email"
 					name="email"
 					placeholder="Correo Electrónico Institucional"
-					value={correo}
 
 				/>
 				<Input
 					type="password"
 					name="password"
 					placeholder="Contraseña"
-					value={password}
 
 				/>
 				<ContenedorBoton>
-					<Boton as="button" primario type="submit">Iniciar Sesión</Boton>
+					<Boton as="button" primario type="submit"  onClick={() => navigate("/inicio-empleado")}>Iniciar Sesión</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/contrasena-olvidada")}>Olvidé mi contraseña</Boton>
 				</ContenedorBoton>
 			</Formulario>
 
