@@ -73,7 +73,7 @@ const HomeCoordinador =() =>{
       </ContenedorImagen>
       <ContenedorBotonRegistro>
 					<Boton as="button" primario type="submit" onClick={() => navigate("/usuarios")}>Usuarios</Boton>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/contraseña-olvidada")}>Actualizar Contraseña Usuario</Boton>
+					<Boton as="button" primario type="submit" onClick={() => navigate("/mostrar-alumnos-pass")}>Actualizar Contraseña Usuario</Boton>
 			</ContenedorBotonRegistro>
 
       <ContenedorImagen>

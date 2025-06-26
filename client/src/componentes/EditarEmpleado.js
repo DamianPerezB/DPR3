@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate, useParams } from "react-router-dom";
+import { Select } from "../elementos/ElementosDeFormulario";
 import styled from "styled-components";
 import {
   Header,
   Titulo,
   ContenedorHeader,
-  Subtitulo,
+  Subtitulo
 } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import {
@@ -187,20 +188,20 @@ const EditarEmpleado = () => {
           <Input2 type="email" name="correoInstitucional" value={formData.correoInstitucional} onChange={handleChange} placeholder="Correo Institucional" required />
 
           <label>Estado:</label>
-          <select name="estado" value={formData.estado} onChange={handleChange} required>
+          <Select name="estado" value={formData.estado} onChange={handleChange} required>
             <option value="">Seleccione estado</option>
             {estadosEmpleado.map((estado) => (
               <option key={estado.id} value={estado.id}>{estado.nombre}</option>
             ))}
-          </select>
+          </Select>
 
           <label>Tipo:</label>
-          <select name="tipo" value={formData.tipo} onChange={handleChange} required>
+          <Select name="tipo" value={formData.tipo} onChange={handleChange} required>
             <option value="">Seleccione tipo</option>
             {tiposEmpleado.map((tipo) => (
               <option key={tipo.id} value={tipo.id}>{tipo.nombre}</option>
             ))}
-          </select>
+          </Select>
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>

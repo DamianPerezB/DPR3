@@ -49,6 +49,9 @@ import EditarPermiso from './componentes/EditarPermiso';
 import MostrarMaterialesA from './componentes/MostrarMaterialesA';
 import MostrarMaterialA from './componentes/MostrarMaterialA';
 
+import MostrarAlumnosPass from './componentes/MostrarAlumnosPass';
+import EditarPass from './componentes/EditarPass';
+
 import Perfil from './componentes/Perfil'
 import PerfilAlumno from './componentes/PerfilAlumno'; 
 import Usuarios from './componentes/GestionUsuarios'
@@ -107,6 +110,8 @@ root.render(
         <Route path='/registro-aviso' element={<RegistrarAviso/>} />
         <Route path='/mostrar-materiales-a' element={<MostrarMaterialesA/>} />
         <Route path='/mostrar-material-a/:id' element={<MostrarMaterialA/>}/>
+        <Route path='/mostrar-alumnos-pass' element={<MostrarAlumnosPass/>}/>
+        <Route path='/editar-pass/:id' element={<EditarPass/>}/>
         <Route path='/' element={<App />} />
         
         </Routes>
