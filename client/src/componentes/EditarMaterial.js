@@ -1,13 +1,9 @@
-import {
-  Header,
-  Titulo,
-  ContenedorHeader,
-} from '../elementos/Header';
-import Boton from '../elementos/Boton';
-import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
+import Boton from "../elementos/Boton";
+import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
+import { useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
 import {
   TitutuloSecciones,
   FormularioRegistroSecciones,
@@ -15,9 +11,9 @@ import {
   Input2,
   ContenedorBoton,
   FormularioRegistro,
-} from '../elementos/ElementosDeFormulario';
-import imagen1 from '../imagenes/motasPantera4.png';
-import BotonAtras from '../elementos/BotonAtras';
+} from "../elementos/ElementosDeFormulario";
+import imagen1 from "../imagenes/motasPantera4.png";
+import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenMotas = styled.img`
   position: absolute;
@@ -40,17 +36,17 @@ const EditarMaterial = () => {
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
-    id: '',
-    inventarioUAM: '',
-    inventarioCoordinacion: '',
-    marca: '',
-    modelo: '',
-    numeroSerie: '',
-    estado: '',
-    nombreMaterial: '',
-    cantidad: '',
-    tipo: '',
-    descripcion: ''
+    id: "",
+    inventarioUAM: "",
+    inventarioCoordinacion: "",
+    marca: "",
+    modelo: "",
+    numeroSerie: "",
+    estado: "",
+    nombreMaterial: "",
+    cantidad: "",
+    tipo: "",
+    descripcion: "",
   });
 
   useEffect(() => {
@@ -60,23 +56,23 @@ const EditarMaterial = () => {
         if (response.ok) {
           const data = await response.json();
           setFormData({
-            id: data.id || '',
-            inventarioUAM: data.inventario_uam || '',
-            inventarioCoordinacion: data.inventario_coordinacion || '',
-            marca: data.marca || '',
-            modelo: data.modelo || '',
-            numeroSerie: data.numeroserie?.toString() || '',
-            estado: data.estado?.toString() || '',
-            nombreMaterial: data.nombrematerial || '',
-            cantidad: data.cantidad?.toString() || '',
-            tipo: data.tipo?.toString() || '',
-            descripcion: data.descripcion || ''
+            id: data.id || "",
+            inventarioUAM: data.inventario_uam || "",
+            inventarioCoordinacion: data.inventario_coordinacion || "",
+            marca: data.marca || "",
+            modelo: data.modelo || "",
+            numeroSerie: data.numeroserie?.toString() || "",
+            estado: data.estado?.toString() || "",
+            nombreMaterial: data.nombrematerial || "",
+            cantidad: data.cantidad?.toString() || "",
+            tipo: data.tipo?.toString() || "",
+            descripcion: data.descripcion || "",
           });
         } else {
-          alert('Error al obtener datos del material');
+          alert("Error al obtener datos del material");
         }
       } catch (error) {
-        console.error('Error al cargar material:', error);
+        console.error("Error al cargar material:", error);
       }
     };
 
@@ -86,7 +82,11 @@ const EditarMaterial = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if ((name === 'numeroSerie' || name === 'cantidad') && value && !/^\d*$/.test(value)) {
+    if (
+      (name === "numeroSerie" || name === "cantidad") &&
+      value &&
+      !/^\d*$/.test(value)
+    ) {
       return;
     }
 
@@ -97,7 +97,7 @@ const EditarMaterial = () => {
     e.preventDefault();
 
     for (const campo in formData) {
-      if (formData[campo].trim() === '') {
+      if (formData[campo].trim() === "") {
         alert(`Por favor, completa el campo: ${campo}`);
         return;
       }
@@ -105,25 +105,25 @@ const EditarMaterial = () => {
 
     try {
       const response = await fetch(`http://localhost:4000/material/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           numeroSerie: parseInt(formData.numeroSerie),
           cantidad: parseInt(formData.cantidad),
           estado: parseInt(formData.estado),
-          tipo: parseInt(formData.tipo)
+          tipo: parseInt(formData.tipo),
         }),
       });
 
-      if (!response.ok) throw new Error('Error al actualizar material');
+      if (!response.ok) throw new Error("Error al actualizar material");
 
       const data = await response.json();
-      alert('Material actualizado con éxito');
-      navigate('/materiales');
+      alert("Material actualizado con éxito");
+      navigate("/materiales");
     } catch (error) {
-      console.error('Error al actualizar material:', error);
-      alert('Hubo un error al actualizar el material');
+      console.error("Error al actualizar material:", error);
+      alert("Hubo un error al actualizar el material");
     }
   };
 
@@ -145,7 +145,6 @@ const EditarMaterial = () => {
       <FormularioRegistro onSubmit={handleSubmit}>
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Material</TitutuloSecciones>
-
           ID del Material
           <Input2
             type="text"

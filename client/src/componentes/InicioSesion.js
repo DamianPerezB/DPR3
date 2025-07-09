@@ -1,76 +1,121 @@
-import { Header, Titulo, ContenedorHeader } from '../elementos/Header';
-import Boton from '../elementos/Boton';
-import { Helmet } from 'react-helmet';
-import { Formulario, Input, ContenedorBoton } from '../elementos/ElementosDeFormulario'
-import styled from 'styled-components';
-import imagen from '../imagenes/variacion5Cua.png'
+import React, { useState } from "react";
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
+import Boton from "../elementos/Boton";
+import { Helmet } from "react-helmet";
+import {
+  Formulario,
+  Input,
+  ContenedorBoton,
+} from "../elementos/ElementosDeFormulario";
+import styled from "styled-components";
+import imagen from "../imagenes/variacion5Cua.png";
 import { useNavigate } from "react-router-dom";
 
 const ImagenLogo1 = styled.img`
-    width: 40%; /* La imagen es un 30% más pequeña */
-    margin-left:-2%; /*Se mueve a la derecha*/
-    margin-top: 20px; /* Puedes ajustar el valor según sea necesario */
-
-    @media (max-width: 768px) {
-        margin-left: 0; /* Elimina el margen izquierdo en pantallas pequeñas */
-        width: 92%; /* Ocupa todo el ancho del contenedor en pantallas pequeñas */
-    }
-
+  width: 40%;
+  margin-left: -2%;
+  margin-top: 20px;
+  @media (max-width: 768px) {
+    margin-left: 0;
+    width: 92%;
+  }
 `;
 
-
 const ContenedorTitulo = styled.div`
-	height: 10%;
-	width:50%;
-	margin:1%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-left: 40%; /* Espacio del 10% a la izquierda */
-
+  height: 10%;
+  width: 50%;
+  margin: 1%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 40%;
 `;
 
 const InicioSesion = () => {
-	const navigate = useNavigate();
-	return (
+  const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-		<>
-			<Helmet>
-				<title>Inicia Sesion</title>
-			</Helmet>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-			<Header>
-				<ContenedorHeader>
-					<Titulo>Iniciar Sesión</Titulo>
+    try {
+      const response = await fetch("http://localhost:4000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ correo, password }),
+      });
 
-				</ContenedorHeader>
-			</Header>
-			<ContenedorTitulo>
-				<ImagenLogo1 src={imagen} alt="LogoUam" />
-			</ContenedorTitulo>
-			<Formulario >
+      const data = await response.json();
 
-				<Input
-					type="email"
-					name="email"
-					placeholder="Correo Electrónico Institucional"
+      if (response.ok) {
+        localStorage.setItem("idUsuario", data.datos.id);
+        localStorage.setItem("tipoUsuario", data.tipo);
 
-				/>
-				<Input
-					type="password"
-					name="password"
-					placeholder="Contraseña"
+        if (data.tipo === "empleado") {
+          navigate("/inicio-empleado");
+        } else if (data.tipo === "alumno") {
+          navigate("/inicio-alumno");
+        }
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      console.error("Error al iniciar sesión", error);
+      setError("Error al conectar con el servidor");
+    }
+  };
 
-				/>
-				<ContenedorBoton>
-					<Boton as="button" primario type="submit"  onClick={() => navigate("/inicio-empleado")}>Iniciar Sesión</Boton>
-					<Boton as="button" primario type="submit" onClick={() => navigate("/contrasena-olvidada")}>Olvidé mi contraseña</Boton>
-				</ContenedorBoton>
-			</Formulario>
+  return (
+    <>
+      <Helmet>
+        <title>Inicia Sesión</title>
+      </Helmet>
 
-		</>
-	);
-}
+      <Header>
+        <ContenedorHeader>
+          <Titulo>Iniciar Sesión</Titulo>
+        </ContenedorHeader>
+      </Header>
+
+      <ContenedorTitulo>
+        <ImagenLogo1 src={imagen} alt="LogoUam" />
+      </ContenedorTitulo>
+
+      <Formulario onSubmit={handleSubmit}>
+        <Input
+          type="email"
+          placeholder="Correo Electrónico Institucional"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          required
+        />
+        <Input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <ContenedorBoton>
+          <Boton as="button" primario type="submit">
+            Iniciar Sesión
+          </Boton>
+          <Boton
+            as="button"
+            primario
+            type="button"
+            onClick={() => navigate("/contrasena-olvidada")}
+          >
+            Olvidé mi contraseña
+          </Boton>
+        </ContenedorBoton>
+
+        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+      </Formulario>
+    </>
+  );
+};
+
 export default InicioSesion;
-
-

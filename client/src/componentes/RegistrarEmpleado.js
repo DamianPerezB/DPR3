@@ -42,7 +42,7 @@ const RegistrarEmpleado = () => {
     apellidoMaterno: "",
     correoInstitucional: "",
     estado: "0",
-    tipo: ""
+    tipo: "",
   });
 
   const handleChange = (e) => {

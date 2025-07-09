@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`

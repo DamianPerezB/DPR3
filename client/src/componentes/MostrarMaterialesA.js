@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`
@@ -79,6 +79,13 @@ const MostrarMateriales = () => {
   };
 
   useEffect(() => {
+    const id = localStorage.getItem("idUsuario");
+    const tipo = localStorage.getItem("tipoUsuario");
+
+    if (!id || tipo !== "alumno") {
+      navigate("/");
+      return;
+    }
     obtenerMateriales();
   }, []);
 
@@ -134,9 +141,13 @@ const MostrarMateriales = () => {
               <Celda>{material.marca}</Celda>
               <Celda>{material.modelo}</Celda>
               <Celda>{material.cantidad}</Celda>
-              <Celda>{material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}</Celda>
               <Celda>
-                <BotonMostrarMas onClick={() => navigate(`/mostrar-material-a/${material.id}`)}>
+                {material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}
+              </Celda>
+              <Celda>
+                <BotonMostrarMas
+                  onClick={() => navigate(`/mostrar-material-a/${material.id}`)}
+                >
                   Mostrar más
                 </BotonMostrarMas>
               </Celda>

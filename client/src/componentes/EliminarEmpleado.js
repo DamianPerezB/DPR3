@@ -84,12 +84,9 @@ const EliminarEmpleado = () => {
     if (!confirmar) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:4000/empleado/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`http://localhost:4000/empleado/${id}`, {
+        method: "DELETE",
+      });
 
       if (response.ok) {
         setEmpleados((prev) => prev.filter((e) => e.noeconomico !== id));

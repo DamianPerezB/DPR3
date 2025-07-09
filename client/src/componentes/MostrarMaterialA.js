@@ -1,7 +1,7 @@
 import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   TitutuloSecciones,
@@ -29,9 +29,9 @@ const ImagenMotas = styled.img`
   }
 `;
 
-const MostrarMaterial = () => {
+const MostrarMaterialA = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     id: "",
     inventarioUAM: "",
@@ -47,6 +47,13 @@ const MostrarMaterial = () => {
   });
 
   useEffect(() => {
+    const idA = localStorage.getItem("idUsuario");
+    const tipo = localStorage.getItem("tipoUsuario");
+
+    if (!idA || tipo !== "alumno") {
+      navigate("/");
+      return;
+    }
     const fetchMaterial = async () => {
       try {
         const response = await fetch(`http://localhost:4000/material/${id}`);
@@ -67,9 +74,11 @@ const MostrarMaterial = () => {
           });
         } else {
           alert("Error al obtener datos del material");
+          navigate("/mostrar-materiales-a");
         }
       } catch (error) {
         console.error("Error al cargar material:", error);
+        navigate("/mostrar-materiales-a");
       }
     };
 
@@ -134,4 +143,4 @@ const MostrarMaterial = () => {
   );
 };
 
-export default MostrarMaterial;
+export default MostrarMaterialA;

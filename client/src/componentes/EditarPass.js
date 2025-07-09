@@ -136,10 +136,18 @@ const EditarPass = () => {
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Alumno</TitutuloSecciones>
           <Subtitulo>
-            <p><strong>Nombre:</strong> {formData.nombre}</p>
-            <p><strong>Apellido Paterno:</strong> {formData.apellidop}</p>
-            <p><strong>Apellido Materno:</strong> {formData.apellidom}</p>
-            <p><strong>Matrícula:</strong> {formData.matricula}</p>
+            <p>
+              <strong>Nombre:</strong> {formData.nombre}
+            </p>
+            <p>
+              <strong>Apellido Paterno:</strong> {formData.apellidop}
+            </p>
+            <p>
+              <strong>Apellido Materno:</strong> {formData.apellidom}
+            </p>
+            <p>
+              <strong>Matrícula:</strong> {formData.matricula}
+            </p>
           </Subtitulo>
         </FormularioRegistroSecciones>
 

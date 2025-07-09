@@ -7,7 +7,7 @@ import {
   Header,
   Titulo,
   ContenedorHeader,
-  Subtitulo
+  Subtitulo,
 } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import {
@@ -170,42 +170,105 @@ const EditarEmpleado = () => {
           <TitutuloSecciones>Datos de Contacto</TitutuloSecciones>
           <Subtitulo>
             Nombre
-            <Input2 type="text" name="nombre" value={formData.nombre} onChange={handleChange} placeholder="Nombre(s)" required />
-            <Input2 type="text" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange} placeholder="Apellido Paterno" required />
-            <Input2 type="text" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
+            <Input2
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              placeholder="Nombre(s)"
+              required
+            />
+            <Input2
+              type="text"
+              name="apellidoPaterno"
+              value={formData.apellidoPaterno}
+              onChange={handleChange}
+              placeholder="Apellido Paterno"
+              required
+            />
+            <Input2
+              type="text"
+              name="apellidoMaterno"
+              value={formData.apellidoMaterno}
+              onChange={handleChange}
+              placeholder="Apellido Materno"
+              required
+            />
           </Subtitulo>
         </FormularioRegistroSecciones>
 
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos de la Cuenta</TitutuloSecciones>
-          <Input2 type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Contraseña (dejar en blanco para no cambiar)" />
-          <Input2 type="password" name="repeatPassword" value={formData.repeatPassword} onChange={handleChange} placeholder="Repetir Contraseña" />
+          <Input2
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Contraseña (dejar en blanco para no cambiar)"
+          />
+          <Input2
+            type="password"
+            name="repeatPassword"
+            value={formData.repeatPassword}
+            onChange={handleChange}
+            placeholder="Repetir Contraseña"
+          />
         </FormularioRegistroSecciones>
 
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Empleado</TitutuloSecciones>
-          <Input2 type="text" name="noEconomico" value={formData.noEconomico} onChange={handleChange} placeholder="No Económico" required />
-          <Input2 type="email" name="correoInstitucional" value={formData.correoInstitucional} onChange={handleChange} placeholder="Correo Institucional" required />
+          <Input2
+            type="text"
+            name="noEconomico"
+            value={formData.noEconomico}
+            onChange={handleChange}
+            placeholder="No Económico"
+            required
+          />
+          <Input2
+            type="email"
+            name="correoInstitucional"
+            value={formData.correoInstitucional}
+            onChange={handleChange}
+            placeholder="Correo Institucional"
+            required
+          />
 
           <label>Estado:</label>
-          <Select name="estado" value={formData.estado} onChange={handleChange} required>
+          <Select
+            name="estado"
+            value={formData.estado}
+            onChange={handleChange}
+            required
+          >
             <option value="">Seleccione estado</option>
             {estadosEmpleado.map((estado) => (
-              <option key={estado.id} value={estado.id}>{estado.nombre}</option>
+              <option key={estado.id} value={estado.id}>
+                {estado.nombre}
+              </option>
             ))}
           </Select>
 
           <label>Tipo:</label>
-          <Select name="tipo" value={formData.tipo} onChange={handleChange} required>
+          <Select
+            name="tipo"
+            value={formData.tipo}
+            onChange={handleChange}
+            required
+          >
             <option value="">Seleccione tipo</option>
             {tiposEmpleado.map((tipo) => (
-              <option key={tipo.id} value={tipo.id}>{tipo.nombre}</option>
+              <option key={tipo.id} value={tipo.id}>
+                {tipo.nombre}
+              </option>
             ))}
           </Select>
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>
-          <Boton as="button" type="submit">Actualizar Datos</Boton>
+          <Boton as="button" type="submit">
+            Actualizar Datos
+          </Boton>
         </ContenedorBoton>
       </FormularioRegistro>
     </>

@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`
@@ -62,7 +62,6 @@ const BotonEditar = styled.button`
     background-color: #ec971f;
   }
 `;
-
 
 const Permisos = () => {
   const navigate = useNavigate();
@@ -135,7 +134,11 @@ const Permisos = () => {
               <Celda>{empleado.apellidomaterno}</Celda>
               <Celda>{empleado.tipo_nombre}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-permiso/${empleado.noeconomico}`)}>
+                <BotonEditar
+                  onClick={() =>
+                    navigate(`/editar-permiso/${empleado.noeconomico}`)
+                  }
+                >
                   Modificar Permisos
                 </BotonEditar>
               </Celda>

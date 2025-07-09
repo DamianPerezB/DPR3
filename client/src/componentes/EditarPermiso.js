@@ -39,7 +39,8 @@ const TablaPermisos = styled.table`
   border-collapse: collapse;
   margin-top: 1rem;
 
-  th, td {
+  th,
+  td {
     padding: 0.6rem 0.8rem;
     text-align: left;
     border-bottom: 1px solid #ccc;
@@ -138,10 +139,18 @@ const EditarPermiso = () => {
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del empleado</TitutuloSecciones>
           <Subtitulo>
-            <p><strong>Nombre:</strong> {empleado.nombre}</p>
-            <p><strong>Apellido Paterno:</strong> {empleado.apellidopaterno}</p>
-            <p><strong>Apellido Materno:</strong> {empleado.apellidomaterno}</p>
-            <p><strong>Número económico:</strong> {empleado.noeconomico}</p>
+            <p>
+              <strong>Nombre:</strong> {empleado.nombre}
+            </p>
+            <p>
+              <strong>Apellido Paterno:</strong> {empleado.apellidopaterno}
+            </p>
+            <p>
+              <strong>Apellido Materno:</strong> {empleado.apellidomaterno}
+            </p>
+            <p>
+              <strong>Número económico:</strong> {empleado.noeconomico}
+            </p>
           </Subtitulo>
         </FormularioRegistroSecciones>
 
@@ -173,7 +182,9 @@ const EditarPermiso = () => {
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>
-          <Boton as="button" type="submit">Guardar permisos</Boton>
+          <Boton as="button" type="submit">
+            Guardar permisos
+          </Boton>
         </ContenedorBoton>
       </FormularioRegistro>
     </>

@@ -41,11 +41,12 @@ const RegistrarAlumno = () => {
   const [formData, setFormData] = useState({
     matricula: "",
     password: "",
+    repeatPassword: "",
     nombre: "",
     apellidop: "",
     apellidom: "",
     unidad: "",
-    división: "CNI",
+    división: "",
     licenciatura: "",
     estado: "",
     correoinstitucional: "",
@@ -56,6 +57,24 @@ const RegistrarAlumno = () => {
     const { name, value } = e.target;
 
     if (name === "matricula" && !/^[0-9]*$/.test(value)) {
+      return;
+    }
+
+    // Cuando cambia la licenciatura, actualizar división según su valor
+    if (name === "licenciatura") {
+      let nuevaDivision = "";
+
+      if (["131", "141", "144", "132"].includes(value)) {
+        nuevaDivision = "CNI";
+      } else if (["130", "137", "138"].includes(value)) {
+        nuevaDivision = "CCD";
+      } else if (["128", "129", "135", "136"].includes(value)) {
+        nuevaDivision = "CSH";
+      } else {
+        nuevaDivision = "";
+      }
+
+      setFormData({ ...formData, [name]: value, división: nuevaDivision });
       return;
     }
 
@@ -207,6 +226,16 @@ const RegistrarAlumno = () => {
             <option value="135">Estudios Socioterritoriales</option>
             <option value="136">Humanidades</option>
           </Select>
+
+          {/* División asignada automáticamente */}
+          <Input2
+            type="text"
+            name="división"
+            value={formData.división}
+            placeholder="División"
+            readOnly
+          />
+
           <Select
             name="estado"
             value={formData.estado}

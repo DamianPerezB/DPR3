@@ -1,19 +1,19 @@
-import { Header, Titulo, ContenedorHeader } from '../elementos/Header';
-import Boton from '../elementos/Boton';
-import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
+import Boton from "../elementos/Boton";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import {
   TitutuloSecciones,
   FormularioRegistroSecciones,
   Select,
   Input2,
   ContenedorBoton,
-  FormularioRegistro
-} from '../elementos/ElementosDeFormulario';
-import imagen1 from '../imagenes/motasPantera4.png';
-import BotonAtras from '../elementos/BotonAtras';
+  FormularioRegistro,
+} from "../elementos/ElementosDeFormulario";
+import imagen1 from "../imagenes/motasPantera4.png";
+import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenMotas = styled.img`
   position: absolute;
@@ -35,24 +35,28 @@ const RegistrarMaterial = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    id: '',
-    inventarioUAM: '',
-    inventarioCoordinacion: '',
-    marca: '',
-    modelo: '',
-    numeroSerie: '',
-    estado: '',
-    nombreMaterial: '',
-    cantidad: '',
-    tipo: '',
-    descripcion: ''
+    id: "",
+    inventarioUAM: "",
+    inventarioCoordinacion: "",
+    marca: "",
+    modelo: "",
+    numeroSerie: "",
+    estado: "",
+    nombreMaterial: "",
+    cantidad: "",
+    tipo: "",
+    descripcion: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     // Solo permitir números en campos numéricos
-    if ((name === 'numeroSerie' || name === 'cantidad') && value && !/^\d+$/.test(value)) {
+    if (
+      (name === "numeroSerie" || name === "cantidad") &&
+      value &&
+      !/^\d+$/.test(value)
+    ) {
       return;
     }
 
@@ -64,33 +68,33 @@ const RegistrarMaterial = () => {
 
     // Validación manual extra por si alguien intenta enviar el form sin usar los controles
     for (const campo in formData) {
-      if (formData[campo].trim() === '') {
+      if (formData[campo].trim() === "") {
         alert(`Por favor, completa el campo: ${campo}`);
         return;
       }
     }
 
     try {
-      const response = await fetch('http://localhost:4000/material', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:4000/material", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
           numeroSerie: parseInt(formData.numeroSerie),
           cantidad: parseInt(formData.cantidad),
           estado: parseInt(formData.estado),
-          tipo: parseInt(formData.tipo)
+          tipo: parseInt(formData.tipo),
         }),
       });
 
-      if (!response.ok) throw new Error('Error al registrar material');
+      if (!response.ok) throw new Error("Error al registrar material");
 
       const data = await response.json();
-      alert('Material registrado con éxito');
-      navigate('/inicio-empleado');
+      alert("Material registrado con éxito");
+      navigate("/materiales");
     } catch (error) {
-      console.error('Error al registrar material:', error);
-      alert('Hubo un error al registrar el material');
+      console.error("Error al registrar material:", error);
+      alert("Hubo un error al registrar el material");
     }
   };
 
@@ -112,7 +116,6 @@ const RegistrarMaterial = () => {
       <FormularioRegistro onSubmit={handleSubmit}>
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Material</TitutuloSecciones>
-
           ID del Material
           <Input2
             type="text"

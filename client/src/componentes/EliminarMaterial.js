@@ -79,7 +79,9 @@ const EliminarMaterial = () => {
   };
 
   const handleEliminar = async (id) => {
-    const confirmar = window.confirm("¿Estás seguro de que deseas eliminar este material?");
+    const confirmar = window.confirm(
+      "¿Estás seguro de que deseas eliminar este material?"
+    );
     if (!confirmar) return;
 
     try {
@@ -163,8 +165,12 @@ const EliminarMaterial = () => {
               <Celda>{material.numeroserie}</Celda>
               <Celda>{material.nombrematerial}</Celda>
               <Celda>{material.cantidad}</Celda>
-              <Celda>{material.estado === 0 ? "Disponible" : "No disponible"}</Celda>
-              <Celda>{material.tipo === 0 ? "Inventariado" : "Consumible"}</Celda>
+              <Celda>
+                {material.estado === 0 ? "Disponible" : "No disponible"}
+              </Celda>
+              <Celda>
+                {material.tipo === 0 ? "Inventariado" : "Consumible"}
+              </Celda>
               <Celda>{material.descripcion}</Celda>
               <Celda>
                 <BotonEliminar onClick={() => handleEliminar(material.id)}>

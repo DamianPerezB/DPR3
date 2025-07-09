@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`
@@ -141,10 +141,16 @@ const MostrarMateriales = () => {
               <Celda>{material.numeroserie}</Celda>
               <Celda>{material.nombrematerial}</Celda>
               <Celda>{material.cantidad}</Celda>
-              <Celda>{material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}</Celda>
-              <Celda>{material.tipo === 0 ? "Inventariado" : "Consumible"}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-material/${material.id}`)}>
+                {material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}
+              </Celda>
+              <Celda>
+                {material.tipo === 0 ? "Inventariado" : "Consumible"}
+              </Celda>
+              <Celda>
+                <BotonEditar
+                  onClick={() => navigate(`/editar-material/${material.id}`)}
+                >
                   Editar
                 </BotonEditar>
               </Celda>

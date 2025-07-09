@@ -122,7 +122,8 @@ const RegistrarPrestamo = () => {
   };
 
   const validarDatos = async () => {
-    const { id, idAlumno, idEmpleado, fechaPrestamo, fechaDevolucion } = datosPrestamo;
+    const { id, idAlumno, idEmpleado, fechaPrestamo, fechaDevolucion } =
+      datosPrestamo;
 
     if (!id || !idAlumno || !idEmpleado || !fechaPrestamo || !fechaDevolucion) {
       alert("Todos los campos son obligatorios.");
@@ -134,13 +135,17 @@ const RegistrarPrestamo = () => {
       return false;
     }
 
-    const resMatricula = await fetch(`http://localhost:4000/alumno/${idAlumno}`);
+    const resMatricula = await fetch(
+      `http://localhost:4000/alumno/${idAlumno}`
+    );
     if (resMatricula.status !== 200) {
       alert("La matrícula no existe.");
       return false;
     }
 
-    const resEmpleado = await fetch(`http://localhost:4000/empleado/${idEmpleado}`);
+    const resEmpleado = await fetch(
+      `http://localhost:4000/empleado/${idEmpleado}`
+    );
     if (resEmpleado.status !== 200) {
       alert("El empleado no existe.");
       return false;
@@ -172,10 +177,12 @@ const RegistrarPrestamo = () => {
       return;
     }
 
-    const materialesPrestamo = Object.entries(carrito).map(([idMaterial, cantidad]) => ({
-      idMaterial,
-      cantidad,
-    }));
+    const materialesPrestamo = Object.entries(carrito).map(
+      ([idMaterial, cantidad]) => ({
+        idMaterial,
+        cantidad,
+      })
+    );
 
     try {
       const res = await fetch("http://localhost:4000/prestamo", {

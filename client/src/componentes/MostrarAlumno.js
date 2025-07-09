@@ -12,7 +12,7 @@ const Tabla = styled.table`
   background: #ffffff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const EncabezadoTabla = styled.thead`
@@ -48,7 +48,7 @@ const InputBusqueda = styled.input`
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
-  aling: center
+  aling: center;
 `;
 
 const BotonEditar = styled.button`
@@ -146,7 +146,9 @@ const MostrarAlumnos = () => {
               <Celda>{alumno.observaciones}</Celda>
               <Celda>{alumno.sancion}</Celda>
               <Celda>
-                <BotonEditar onClick={() => navigate(`/editar-alumno/${alumno.matricula}`)}>
+                <BotonEditar
+                  onClick={() => navigate(`/editar-alumno/${alumno.matricula}`)}
+                >
                   Editar
                 </BotonEditar>
               </Celda>

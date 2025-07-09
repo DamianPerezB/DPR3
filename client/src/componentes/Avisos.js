@@ -1,8 +1,4 @@
-import {
-  Header,
-  Titulo,
-  ContenedorHeader,
-} from "../elementos/Header";
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
