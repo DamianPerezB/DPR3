@@ -32,21 +32,26 @@ const Perfil = () => {
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
   const [permisos, setPermisos] = useState([]);
-  const empleadoId = 44321;
 
   useEffect(() => {
+    const id = localStorage.getItem("idUsuario");
+    const tipo = localStorage.getItem("tipoUsuario");
+
+    if (!id || tipo !== "empleado") {
+      navigate("/");
+    }
     // Obtener datos del empleado
-    fetch(`http://localhost:4000/empleado/${empleadoId}`)
+    fetch(`http://localhost:4000/empleado/${id}`)
       .then((response) => response.json())
       .then((data) => setEmpleado(data))
       .catch((error) => console.error("Error al obtener empleado:", error));
 
     // Obtener permisos del empleado
-    fetch(`http://localhost:4000/empleado/permisos/${empleadoId}`)
+    fetch(`http://localhost:4000/empleado/permisos/${id}`)
       .then((response) => response.json())
       .then((data) => setPermisos(data))
       .catch((error) => console.error("Error al obtener permisos:", error));
-  }, [empleadoId]);
+  }, [navigate]);
 
   return (
     <>

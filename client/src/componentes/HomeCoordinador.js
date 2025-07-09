@@ -2,6 +2,7 @@ import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import styled from "styled-components";
 import Perfil from "../imagenes/HuellaPantera.png";
 import Historico from "../imagenes/Historico.png";
@@ -41,7 +42,14 @@ const ContenedorBotonRegistro = styled.div`
 
 const HomeCoordinador = () => {
   const navigate = useNavigate();
-
+  useEffect(() => {
+      const id = localStorage.getItem("idUsuario");
+      const tipo = localStorage.getItem("tipoUsuario");
+  
+      if (!id || tipo !== "empleado") {
+        navigate("/");
+      }
+    }, [navigate]);
   return (
     <>
       <Helmet>
