@@ -116,13 +116,11 @@ const EditarAlumno = () => {
     }
 
     try {
-      // Construir el cuerpo de la solicitud
       const alumnoData = {
         ...formData,
         sancion: 0,
       };
 
-      // Si no se proporcionó contraseña, eliminar del cuerpo para no sobreescribir
       if (!formData.password) {
         delete alumnoData.password;
       }

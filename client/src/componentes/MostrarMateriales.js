@@ -79,6 +79,13 @@ const MostrarMateriales = () => {
   };
 
   useEffect(() => {
+    const id = localStorage.getItem("idUsuario");
+    const tipo = localStorage.getItem("tipoUsuario");
+
+    if (!id || tipo !== "empleado") {
+      navigate("/");
+      return;
+    }
     obtenerMateriales();
   }, []);
 

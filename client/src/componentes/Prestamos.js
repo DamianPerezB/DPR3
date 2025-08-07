@@ -1,18 +1,11 @@
-import {
-  Header,
-  Titulo,
-  ContenedorHeader,
-  Subtitulo,
-} from "../elementos/Header";
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
-import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BotonAtras from "../elementos/BotonAtras";
 import AnadirPrestamo from "../imagenes/anadirPrestamo.png";
 import ActualizarPrestamo from "../imagenes/actualizarPrestamo.png";
-import MostrarPrestamo from "../imagenes/mostrarPrestamo.png";
 const ImagenLogo1 = styled.img`
   margin-right: 2%;
   width: 35%; /* La imagen es un 30% más pequeña */
@@ -67,18 +60,14 @@ const Prestamos = () => {
           {" "}
           Añadir Prestamo
         </Boton>
-        <Boton as="button" primario type="submit">
+        <Boton
+          as="button"
+          primario
+          type="submit"
+          onClick={() => navigate("/mostrar-prestamos-activos")}
+        >
           {" "}
-          Actualizar Prestamo
-        </Boton>
-      </ContenedorBotonRegistro>
-      <ContenedorImagen>
-        <ImagenLogo1 src={MostrarPrestamo} alt="LogoUam" />
-      </ContenedorImagen>
-      <ContenedorBotonRegistro>
-        <Boton as="button" primario type="submit">
-          {" "}
-          Mostrar Prestamos
+          Recibir Prestamo
         </Boton>
       </ContenedorBotonRegistro>
     </>

@@ -51,7 +51,6 @@ const RegistrarMaterial = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Solo permitir números en campos numéricos
     if (
       (name === "numeroSerie" || name === "cantidad") &&
       value &&
@@ -66,7 +65,6 @@ const RegistrarMaterial = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación manual extra por si alguien intenta enviar el form sin usar los controles
     for (const campo in formData) {
       if (formData[campo].trim() === "") {
         alert(`Por favor, completa el campo: ${campo}`);

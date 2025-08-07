@@ -40,6 +40,7 @@ const PerfilAlumno = () => {
       navigate("/");
       return;
     }
+
     fetch(`http://localhost:4000/alumno/${id}`)
       .then((response) => {
         if (!response.ok) throw new Error("No se encontró el alumno");
@@ -48,7 +49,6 @@ const PerfilAlumno = () => {
       .then((data) => setAlumno(data))
       .catch((error) => {
         console.error("Error al obtener alumno:", error);
-        // Puedes redirigir o mostrar mensaje si falla
       });
   }, [navigate]);
 

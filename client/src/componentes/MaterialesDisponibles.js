@@ -1,9 +1,4 @@
-import {
-  Header,
-  Titulo,
-  ContenedorHeader,
-  Subtitulo,
-} from "../elementos/Header";
+import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -88,7 +83,7 @@ const MaterialesDisponibles = () => {
           onClick={() => navigate("/mostrar-materiales")}
         >
           {" "}
-          Mostrar Material
+          Mostrar Materiales
         </Boton>
       </ContenedorBotonRegistro>
     </>

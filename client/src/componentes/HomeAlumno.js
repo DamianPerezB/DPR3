@@ -81,7 +81,11 @@ const HomeAlumno = () => {
         >
           Materiales Disponibles
         </Boton>
-        <Boton as="button" primario>
+        <Boton
+          as="button"
+          primario
+          onClick={() => navigate("/historico-alumno")}
+        >
           Historico
         </Boton>
       </ContenedorBotonRegistro>

@@ -17,10 +17,10 @@ import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenLogo1 = styled.img`
   margin-right: 2%;
-  width: 35%; /* La imagen es un 30% más pequeña */
+  width: 35%;
   @media (max-width: 768px) {
     margin-top: -400px;
-    width: 40%; /* Ocupa todo el ancho del contenedor en pantallas pequeñas */
+    width: 40%;
   }
 `;
 
@@ -36,20 +36,26 @@ const ContenedorImagen = styled.div`
 const ContenedorBotonRegistro = styled.div`
   display: flex;
   justify-content: center;
-  margin: 1.5%; /* 40px */
-  gap: 100px; /* Espacio entre los botones */
+  margin: 1.5%;
+  gap: 100px;
 `;
 
 const HomeCoordinador = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
-      const id = localStorage.getItem("idUsuario");
-      const tipo = localStorage.getItem("tipoUsuario");
-  
-      if (!id || tipo !== "empleado") {
-        navigate("/");
-      }
-    }, [navigate]);
+    const id = localStorage.getItem("idUsuario");
+    const tipo = localStorage.getItem("tipoUsuario");
+
+    if (!id || tipo !== "empleado") {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  const permisos = JSON.parse(localStorage.getItem("permisosUsuario") || "[]");
+
+  const tienePermiso = (idPermiso) => permisos.includes(idPermiso);
+
   return (
     <>
       <Helmet>
@@ -61,28 +67,20 @@ const HomeCoordinador = () => {
           <Titulo>Inicio de Empleado</Titulo>
         </ContenedorHeader>
       </Header>
+
       <BotonAtras ruta="/" />
+
       <ContenedorImagen>
         <ImagenLogo1 src={Orden} alt="LogoUam" />
         <ImagenLogo1 src={Historico} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/materiales")}
-        >
-          {" "}
-          Materiales Disponibles
-        </Boton>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/historico")}
-        >
-          {" "}
+        {tienePermiso(0) && (
+          <Boton as="button" primario onClick={() => navigate("/materiales")}>
+            Materiales Disponibles
+          </Boton>
+        )}
+        <Boton as="button" primario onClick={() => navigate("/historico")}>
           Historico
         </Boton>
       </ContenedorBotonRegistro>
@@ -92,22 +90,20 @@ const HomeCoordinador = () => {
         <ImagenLogo1 src={ActualizaCredenciales} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/usuarios")}
-        >
-          Usuarios
-        </Boton>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/mostrar-alumnos-pass")}
-        >
-          Actualizar Contraseña Usuario
-        </Boton>
+        {tienePermiso(1) && (
+          <Boton as="button" primario onClick={() => navigate("/usuarios")}>
+            Usuarios
+          </Boton>
+        )}
+        {tienePermiso(1) && (
+          <Boton
+            as="button"
+            primario
+            onClick={() => navigate("/mostrar-alumnos-pass")}
+          >
+            Actualizar Contraseña Usuario
+          </Boton>
+        )}
       </ContenedorBotonRegistro>
 
       <ContenedorImagen>
@@ -115,23 +111,19 @@ const HomeCoordinador = () => {
         <ImagenLogo1 src={Aviso} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/avisos")}
-        >
+        <Boton as="button" primario onClick={() => navigate("/avisos")}>
           Sanciones
         </Boton>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/reportes")}
-          style={{ marginLeft: "-40%" }}
-        >
-          Reportes
-        </Boton>
+        {tienePermiso(2) && (
+          <Boton
+            as="button"
+            primario
+            onClick={() => navigate("/reportes")}
+            style={{ marginLeft: "-40%" }}
+          >
+            Reportes
+          </Boton>
+        )}
       </ContenedorBotonRegistro>
 
       <ContenedorImagen>
@@ -139,37 +131,26 @@ const HomeCoordinador = () => {
         <ImagenLogo1 src={Prestamo} alt="LogoUam" />
       </ContenedorImagen>
       <ContenedorBotonRegistro>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/permisos")}
-        >
-          Permisos
-        </Boton>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/prestamos")}
-        >
-          Prestamos
-        </Boton>
+        {tienePermiso(3) && (
+          <Boton as="button" primario onClick={() => navigate("/permisos")}>
+            Permisos
+          </Boton>
+        )}
+        {tienePermiso(4) && (
+          <Boton as="button" primario onClick={() => navigate("/prestamos")}>
+            Prestamos
+          </Boton>
+        )}
       </ContenedorBotonRegistro>
 
       <ContenedorImagen>
         <ImagenLogo1 src={Perfil} alt="LogoUam" />
+        <ContenedorBotonRegistro>
+          <Boton as="button" primario onClick={() => navigate("/perfil")}>
+            Perfil
+          </Boton>
+        </ContenedorBotonRegistro>
       </ContenedorImagen>
-      <ContenedorBotonRegistro>
-        <Boton
-          as="button"
-          primario
-          type="submit"
-          onClick={() => navigate("/perfil")}
-        >
-          Perfil
-        </Boton>
-      </ContenedorBotonRegistro>
     </>
   );
 };

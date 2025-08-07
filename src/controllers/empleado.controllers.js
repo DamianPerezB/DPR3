@@ -140,10 +140,9 @@ const deleteEmpleado = async (req, res, next) => {
     const noEconomico = empleadoRes.rows[0].noeconomico;
 
     // Eliminar permisos asociados
-    await client.query(
-      "DELETE FROM empleado_permiso WHERE noEconomico = $1",
-      [noEconomico]
-    );
+    await client.query("DELETE FROM empleado_permiso WHERE noEconomico = $1", [
+      noEconomico,
+    ]);
 
     // Eliminar empleado
     await client.query("DELETE FROM empleado WHERE id = $1", [id]);
@@ -255,9 +254,13 @@ const getPermisosEmpleado = async (req, res, next) => {
 const getEmpleadoPermisos = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const empleado = await pool.query("SELECT noeconomico FROM empleado WHERE id = $1", [id]);
+    const empleado = await pool.query(
+      "SELECT noeconomico FROM empleado WHERE id = $1",
+      [id]
+    );
 
-    if (empleado.rows.length === 0) return res.status(404).json({ message: "Empleado no encontrado" });
+    if (empleado.rows.length === 0)
+      return res.status(404).json({ message: "Empleado no encontrado" });
 
     const noEco = empleado.rows[0].noeconomico;
 
@@ -278,13 +281,19 @@ const updateEmpleadoPermisos = async (req, res, next) => {
     const { id } = req.params;
     const { permisos } = req.body;
 
-    const empleado = await pool.query("SELECT noeconomico FROM empleado WHERE id = $1", [id]);
+    const empleado = await pool.query(
+      "SELECT noeconomico FROM empleado WHERE id = $1",
+      [id]
+    );
 
-    if (empleado.rows.length === 0) return res.status(404).json({ message: "Empleado no encontrado" });
+    if (empleado.rows.length === 0)
+      return res.status(404).json({ message: "Empleado no encontrado" });
 
     const noEco = empleado.rows[0].noeconomico;
 
-    await pool.query("DELETE FROM empleado_permiso WHERE noeconomico = $1", [noEco]);
+    await pool.query("DELETE FROM empleado_permiso WHERE noeconomico = $1", [
+      noEco,
+    ]);
 
     for (let idPermiso of permisos) {
       await pool.query(

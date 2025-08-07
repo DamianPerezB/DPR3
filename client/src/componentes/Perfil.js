@@ -28,10 +28,33 @@ const ImagenMotas = styled.img`
   }
 `;
 
+// Tabla de permisos
+const TablaPermisos = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+
+  th,
+  td {
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+
+  th {
+    background-color: #f5f5f5;
+  }
+
+  tr:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
 const Perfil = () => {
   const navigate = useNavigate();
   const [empleado, setEmpleado] = useState(null);
-  const [permisos, setPermisos] = useState([]);
+  const [permisosDisponibles, setPermisosDisponibles] = useState([]);
+  const [permisosAsignados, setPermisosAsignados] = useState([]);
 
   useEffect(() => {
     const id = localStorage.getItem("idUsuario");
@@ -40,17 +63,28 @@ const Perfil = () => {
     if (!id || tipo !== "empleado") {
       navigate("/");
     }
-    // Obtener datos del empleado
+
     fetch(`http://localhost:4000/empleado/${id}`)
       .then((response) => response.json())
       .then((data) => setEmpleado(data))
       .catch((error) => console.error("Error al obtener empleado:", error));
 
-    // Obtener permisos del empleado
-    fetch(`http://localhost:4000/empleado/permisos/${id}`)
+    fetch("http://localhost:4000/permisos-empleado")
       .then((response) => response.json())
-      .then((data) => setPermisos(data))
-      .catch((error) => console.error("Error al obtener permisos:", error));
+      .then((data) => setPermisosDisponibles(data))
+      .catch((error) =>
+        console.error("Error al obtener permisos disponibles:", error)
+      );
+
+    const permisosGuardados = localStorage.getItem("permisosUsuario");
+    if (permisosGuardados) {
+      try {
+        const ids = JSON.parse(permisosGuardados).map((id) => Number(id));
+        setPermisosAsignados(ids);
+      } catch (error) {
+        console.error("Error al parsear permisosUsuario:", error);
+      }
+    }
   }, [navigate]);
 
   return (
@@ -86,12 +120,33 @@ const Perfil = () => {
               <Input2 value={empleado.estado_nombre} disabled />
               Tipo:
               <Input2 value={empleado.tipo_nombre} disabled />
-              Permisos:
-              <Input2 value={permisos.join(", ")} disabled />
             </>
           ) : (
-            <p>Cargando datos...</p>
+            <p>Cargando datos del empleado...</p>
           )}
+        </FormularioRegistroSecciones>
+
+        <FormularioRegistroSecciones>
+          <TitutuloSecciones>Permisos asignados</TitutuloSecciones>
+
+          <TablaPermisos>
+            <thead>
+              <tr>
+                <th>Permiso</th>
+                <th>Asignado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {permisosDisponibles.map((permiso) => (
+                <tr key={permiso.id}>
+                  <td>{permiso.nombre}</td>
+                  <td>
+                    {permisosAsignados.includes(permiso.id) ? "Sí" : "No"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </TablaPermisos>
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>

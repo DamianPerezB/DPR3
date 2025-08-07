@@ -14,7 +14,27 @@ import {
   ContenedorBoton,
 } from "../elementos/ElementosDeFormulario";
 
-// Estilos con styled-components
+const ModalFondo = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+`;
+
+const ModalContenido = styled.div`
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 90%;
+`;
+
 const Tabla = styled.table`
   width: 90%;
   margin: 20px auto;
@@ -36,9 +56,7 @@ const CeldaEncabezado = styled.th`
 `;
 
 const FilaTabla = styled.tr``;
-
 const CuerpoTabla = styled.tbody``;
-
 const Celda = styled.td`
   padding: 10px;
   border-bottom: 1px solid #ddd;
@@ -60,24 +78,18 @@ const InputBusqueda = styled.input`
   font-size: 16px;
 `;
 
-const BotonAñadir = styled.button`
-  padding: 6px 10px;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  border-radius: 7px;
-  cursor: pointer;
-  &:hover {
-    background-color: #218838;
-  }
-`;
-
 const RegistrarPrestamo = () => {
   const navigate = useNavigate();
+  const idEmpleado = localStorage.getItem("idUsuario");
+
+  const [alumnos, setAlumnos] = useState([]);
+  const [busquedaAlumno, setBusquedaAlumno] = useState("");
+  const [materiales, setMateriales] = useState([]);
+  const [busquedaMaterial, setBusquedaMaterial] = useState("");
+  const [carrito, setCarrito] = useState({});
+  const [mostrarVistaPrevia, setMostrarVistaPrevia] = useState(false);
+
   const [datosPrestamo, setDatosPrestamo] = useState({
-    id: "",
-    idAlumno: "",
-    idEmpleado: "",
     fechaPrestamo: "",
     fechaDevolucion: "",
     uea: "",
@@ -86,81 +98,86 @@ const RegistrarPrestamo = () => {
     tipoPrestamo: "",
   });
 
-  const [materiales, setMateriales] = useState([]);
-  const [busqueda, setBusqueda] = useState("");
-  const [carrito, setCarrito] = useState({}); // { idMaterial: cantidad }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDatosPrestamo({ ...datosPrestamo, [name]: value });
-  };
-
-  const obtenerMateriales = async () => {
-    try {
-      const res = await fetch("http://localhost:4000/materiales");
-      const data = await res.json();
-      setMateriales(data);
-    } catch (error) {
-      console.error("Error al obtener materiales:", error);
-    }
-  };
+  const [idAlumno, setIdAlumno] = useState("");
+  const [idPrestamo, setIdPrestamo] = useState("");
 
   useEffect(() => {
-    obtenerMateriales();
-  }, []);
+    const fetchData = async () => {
+      const resMateriales = await fetch("http://localhost:4000/materiales");
+      const dataMateriales = await resMateriales.json();
+      setMateriales(dataMateriales);
 
-  const añadirAlCarrito = (id, maxCantidad) => {
-    if (!carrito[id] || carrito[id] < maxCantidad) {
-      setCarrito({ ...carrito, [id]: (carrito[id] || 0) + 1 });
+      const resAlumnos = await fetch("http://localhost:4000/alumnos");
+      const dataAlumnos = await resAlumnos.json();
+      setAlumnos(dataAlumnos);
+
+      const resContador = await fetch(
+        `http://localhost:4000/prestamo/contador/${idEmpleado}`
+      );
+      const { contador } = await resContador.json();
+      const consecutivo = String(contador + 1).padStart(6, "0");
+      setIdPrestamo(`LABPRES-${idEmpleado}-${consecutivo}`);
+
+      const today = new Date().toISOString().split("T")[0];
+      setDatosPrestamo((prev) => ({
+        ...prev,
+        fechaPrestamo: today,
+      }));
+    };
+    fetchData();
+  }, [idEmpleado]);
+
+  useEffect(() => {
+    if (datosPrestamo.tipoPrestamo === "0") {
+      setDatosPrestamo((prev) => ({
+        ...prev,
+        fechaDevolucion: prev.fechaPrestamo,
+      }));
     }
-  };
+  }, [datosPrestamo.tipoPrestamo, datosPrestamo.fechaPrestamo]);
 
   const cambiarCantidad = (id, cantidad) => {
-    if (cantidad >= 0) {
-      setCarrito({ ...carrito, [id]: cantidad });
-    }
+    const material = materiales.find((m) => m.id === id);
+    if (isNaN(cantidad) || cantidad < 0 || !Number.isInteger(cantidad)) return;
+    if (cantidad > material.cantidad) cantidad = material.cantidad;
+
+    setCarrito({ ...carrito, [id]: cantidad });
   };
 
-  const validarDatos = async () => {
-    const { id, idAlumno, idEmpleado, fechaPrestamo, fechaDevolucion } =
-      datosPrestamo;
-
-    if (!id || !idAlumno || !idEmpleado || !fechaPrestamo || !fechaDevolucion) {
+  const validarCampos = () => {
+    if (
+      !idAlumno ||
+      !datosPrestamo.fechaPrestamo ||
+      !datosPrestamo.fechaDevolucion ||
+      !datosPrestamo.tipoPrestamo ||
+      Object.keys(carrito).length === 0
+    ) {
       alert("Todos los campos son obligatorios.");
       return false;
     }
 
-    if (new Date(fechaDevolucion) < new Date(fechaPrestamo)) {
-      alert("La fecha de devolución no puede ser menor a la de inicio.");
+    if (
+      new Date(datosPrestamo.fechaDevolucion) <
+      new Date(datosPrestamo.fechaPrestamo)
+    ) {
+      alert("La fecha de devolución no puede ser anterior a la de préstamo.");
       return false;
     }
 
-    const resMatricula = await fetch(
-      `http://localhost:4000/alumno/${idAlumno}`
-    );
-    if (resMatricula.status !== 200) {
-      alert("La matrícula no existe.");
-      return false;
-    }
-
-    const resEmpleado = await fetch(
-      `http://localhost:4000/empleado/${idEmpleado}`
-    );
-    if (resEmpleado.status !== 200) {
-      alert("El empleado no existe.");
-      return false;
-    }
-
-    const resPrestamo = await fetch(`http://localhost:4000/prestamo/${id}`);
-    if (resPrestamo.status === 200) {
-      alert("El ID de préstamo ya existe.");
-      return false;
-    }
-
-    for (let idMat in carrito) {
-      const mat = materiales.find((m) => m.id === idMat);
-      if (carrito[idMat] > mat.cantidad) {
-        alert(`La cantidad del material ${idMat} excede el inventario.`);
+    for (const [id, cantidad] of Object.entries(carrito)) {
+      const material = materiales.find((m) => m.id === id);
+      if (
+        !Number.isInteger(cantidad) ||
+        cantidad < 1 ||
+        cantidad > material.cantidad
+      ) {
+        alert(
+          `La cantidad para el material "${
+            material?.nombrematerial || id
+          }" debe ser al menos 1 y no mayor que la disponible (${
+            material?.cantidad || 0
+          }).`
+        );
         return false;
       }
     }
@@ -168,20 +185,13 @@ const RegistrarPrestamo = () => {
     return true;
   };
 
-  const generarPrestamo = async () => {
-    const esValido = await validarDatos();
-    if (!esValido) return;
+  const generarVistaPrevia = () => {
+    if (validarCampos()) setMostrarVistaPrevia(true);
+  };
 
-    if (Object.keys(carrito).length === 0) {
-      alert("Debes añadir al menos un material al préstamo.");
-      return;
-    }
-
+  const confirmarPrestamo = async () => {
     const materialesPrestamo = Object.entries(carrito).map(
-      ([idMaterial, cantidad]) => ({
-        idMaterial,
-        cantidad,
-      })
+      ([idMaterial, cantidad]) => ({ idMaterial, cantidad })
     );
 
     try {
@@ -189,33 +199,75 @@ const RegistrarPrestamo = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...datosPrestamo,
+          id: idPrestamo,
+          idAlumno,
+          idEmpleado,
           estadoPrestamo: 0,
+          ...datosPrestamo,
           materiales: materialesPrestamo,
         }),
       });
 
       if (res.ok) {
-        alert("Préstamo registrado exitosamente.");
-        navigate("/inicio-empleado");
+        setMostrarVistaPrevia(false);
+        const alumno = alumnos.find((a) => a.id === idAlumno);
+        const materialesTexto = materialesPrestamo
+          .map(({ idMaterial, cantidad }) => {
+            const mat = materiales.find((m) => m.id === idMaterial);
+            const nombre = mat?.nombrematerial || "Desconocido";
+            return `• ${nombre} (ID: ${idMaterial}): ${cantidad} ${
+              cantidad === 1 ? "unidad" : "unidades"
+            }`;
+          })
+          .join("\n");
+
+        alert(
+          `Préstamo registrado exitosamente\n\n` +
+            `Matrícula: ${alumno?.matricula}\n` +
+            `Fecha de inicio: ${datosPrestamo.fechaPrestamo}\n` +
+            `Fecha de devolución: ${datosPrestamo.fechaDevolucion}\n\n` +
+            `Materiales prestados:\n${materialesTexto}`
+        );
+
+        setIdAlumno("");
+        setDatosPrestamo((prev) => ({
+          ...prev,
+          fechaPrestamo: new Date().toISOString().split("T")[0],
+          fechaDevolucion: "",
+          uea: "",
+          grupo: "",
+          observaciones: "",
+          tipoPrestamo: "",
+        }));
+        setCarrito({});
+        navigate("/prestamos");
       } else {
-        const errorData = await res.json();
-        console.error("Error del backend:", errorData);
-        alert("Error al registrar el préstamo.");
+        const error = await res.json();
+        alert("Error al registrar préstamo: " + error.message);
       }
-    } catch (error) {
-      console.error("Error en la solicitud:", error);
-      alert("No se pudo registrar el préstamo.");
+    } catch (err) {
+      console.error(err);
+      alert("Error de red al registrar el préstamo.");
     }
   };
 
-  const materialesFiltrados = materiales.filter((m) => {
-    const termino = busqueda.toLowerCase();
-    return (
-      m.id.toLowerCase().includes(termino) ||
-      m.nombrematerial.toLowerCase().includes(termino)
-    );
-  });
+  const alumnosFiltrados = alumnos
+    .filter((a) => {
+      const filtro = busquedaAlumno.toLowerCase();
+      return (
+        a.matricula.toLowerCase().includes(filtro) ||
+        a.nombre.toLowerCase().includes(filtro) ||
+        a.apellidopaterno.toLowerCase().includes(filtro) ||
+        a.apellidomaterno.toLowerCase().includes(filtro)
+      );
+    })
+    .slice(0, 3);
+
+  const materialesFiltrados = materiales.filter(
+    (m) =>
+      m.id.toLowerCase().includes(busquedaMaterial.toLowerCase()) ||
+      m.nombrematerial.toLowerCase().includes(busquedaMaterial.toLowerCase())
+  );
 
   return (
     <>
@@ -231,67 +283,143 @@ const RegistrarPrestamo = () => {
       <FormularioRegistro>
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Préstamo</TitutuloSecciones>
-          Matrícula
-          <Input2
+          Buscar Matrícula
+          <InputBusqueda
             type="text"
-            name="idAlumno"
-            value={datosPrestamo.idAlumno}
-            onChange={handleInputChange}
+            value={busquedaAlumno}
+            onChange={(e) => {
+              setBusquedaAlumno(e.target.value);
+              setIdAlumno("");
+            }}
+            placeholder="Buscar por matrícula, nombre o apellido"
           />
+          {busquedaAlumno && !idAlumno && (
+            <div
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                maxHeight: "150px",
+                overflowY: "auto",
+                marginBottom: "1rem",
+              }}
+            >
+              {alumnosFiltrados.map((a) => (
+                <div
+                  key={a.id}
+                  onClick={() => {
+                    setIdAlumno(a.id);
+                    setBusquedaAlumno(
+                      `${a.matricula} - ${a.nombre} ${a.apellidopaterno}`
+                    );
+                  }}
+                  style={{
+                    padding: "10px",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #eee",
+                  }}
+                >
+                  {a.matricula} - {a.nombre} {a.apellidopaterno}{" "}
+                  {a.apellidomaterno}
+                </div>
+              ))}
+            </div>
+          )}
+          {idAlumno && (
+            <div style={{ marginBottom: "1rem" }}>
+              <strong>Alumno seleccionado:</strong>{" "}
+              {alumnos.find((a) => a.id === idAlumno)?.nombre}{" "}
+              {alumnos.find((a) => a.id === idAlumno)?.apellidopaterno}
+              <button
+                onClick={() => {
+                  setIdAlumno("");
+                  setBusquedaAlumno("");
+                }}
+                style={{
+                  marginLeft: "10px",
+                  padding: "2px 8px",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                }}
+              >
+                Cambiar
+              </button>
+            </div>
+          )}
           Fecha inicio
           <Input2
             type="date"
             name="fechaPrestamo"
             value={datosPrestamo.fechaPrestamo}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setDatosPrestamo({
+                ...datosPrestamo,
+                fechaPrestamo: e.target.value,
+              })
+            }
           />
           Fecha devolución
           <Input2
             type="date"
             name="fechaDevolucion"
             value={datosPrestamo.fechaDevolucion}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setDatosPrestamo({
+                ...datosPrestamo,
+                fechaDevolucion: e.target.value,
+              })
+            }
+            disabled={datosPrestamo.tipoPrestamo === "0"}
           />
-          ID préstamo
-          <Input2
-            type="text"
-            name="id"
-            value={datosPrestamo.id}
-            onChange={handleInputChange}
-          />
-          ID empleado
-          <Input2
-            type="text"
-            name="idEmpleado"
-            value={datosPrestamo.idEmpleado}
-            onChange={handleInputChange}
-          />
+          No. Económico
+          <Input2 type="text" value={idEmpleado} disabled />
+          ID Préstamo
+          <Input2 type="text" value={idPrestamo} disabled />
           UEA
           <Input2
             type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             name="uea"
             value={datosPrestamo.uea}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*$/.test(value)) {
+                setDatosPrestamo({ ...datosPrestamo, uea: value });
+              }
+            }}
           />
           Grupo
           <Input2
             type="text"
             name="grupo"
             value={datosPrestamo.grupo}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setDatosPrestamo({ ...datosPrestamo, grupo: e.target.value })
+            }
           />
-          Observación
+          Observaciones
           <Input2
             type="text"
             name="observaciones"
             value={datosPrestamo.observaciones}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setDatosPrestamo({
+                ...datosPrestamo,
+                observaciones: e.target.value,
+              })
+            }
           />
-          Tipo préstamo
+          Tipo de Préstamo
           <Select
             name="tipoPrestamo"
             value={datosPrestamo.tipoPrestamo}
-            onChange={handleInputChange}
+            onChange={(e) =>
+              setDatosPrestamo({
+                ...datosPrestamo,
+                tipoPrestamo: e.target.value,
+              })
+            }
           >
             <option value="">Seleccione</option>
             <option value="0">Interno</option>
@@ -300,7 +428,14 @@ const RegistrarPrestamo = () => {
         </FormularioRegistroSecciones>
 
         <ContenedorBoton>
-          <Boton as="button" primario onClick={generarPrestamo}>
+          <Boton
+            as="button"
+            primario
+            onClick={(e) => {
+              e.preventDefault();
+              generarVistaPrevia();
+            }}
+          >
             Generar Préstamo
           </Boton>
         </ContenedorBoton>
@@ -309,9 +444,9 @@ const RegistrarPrestamo = () => {
       <ContenedorBusqueda>
         <InputBusqueda
           type="text"
-          placeholder="Buscar por ID o nombre..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder="Buscar material por ID o nombre"
+          value={busquedaMaterial}
+          onChange={(e) => setBusquedaMaterial(e.target.value)}
         />
       </ContenedorBusqueda>
 
@@ -322,7 +457,6 @@ const RegistrarPrestamo = () => {
             <CeldaEncabezado>Nombre</CeldaEncabezado>
             <CeldaEncabezado>Disponible</CeldaEncabezado>
             <CeldaEncabezado>Cantidad</CeldaEncabezado>
-            <CeldaEncabezado>Acciones</CeldaEncabezado>
           </FilaTabla>
         </EncabezadoTabla>
         <CuerpoTabla>
@@ -333,24 +467,82 @@ const RegistrarPrestamo = () => {
               <Celda>{m.cantidad}</Celda>
               <Celda>
                 <input
-                  type="number"
-                  value={carrito[m.id] || 0}
-                  min="0"
-                  max={m.cantidad}
-                  onChange={(e) =>
-                    cambiarCantidad(m.id, parseInt(e.target.value))
-                  }
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={carrito[m.id] || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      cambiarCantidad(m.id, parseInt(value || "0"));
+                    }
+                  }}
+                  disabled={m.cantidad === 0}
+                  style={{
+                    width: "80px",
+                    textAlign: "center",
+                    backgroundColor: m.cantidad === 0 ? "#f0f0f0" : "white",
+                  }}
                 />
-              </Celda>
-              <Celda>
-                <BotonAñadir onClick={() => añadirAlCarrito(m.id, m.cantidad)}>
-                  Añadir
-                </BotonAñadir>
               </Celda>
             </FilaTabla>
           ))}
         </CuerpoTabla>
       </Tabla>
+
+      {mostrarVistaPrevia && (
+        <ModalFondo>
+          <ModalContenido>
+            <h3>Confirmar Préstamo</h3>
+            <p>
+              <strong>Matrícula:</strong>{" "}
+              {alumnos.find((a) => a.id === idAlumno)?.matricula}
+            </p>
+            <p>
+              <strong>Fecha inicio:</strong> {datosPrestamo.fechaPrestamo}
+            </p>
+            <p>
+              <strong>Fecha devolución:</strong> {datosPrestamo.fechaDevolucion}
+            </p>
+            <p>
+              <strong>Materiales:</strong>
+              <ul>
+                {Object.entries(carrito).map(([idMat, cantidad]) => {
+                  const mat = materiales.find((m) => m.id === idMat);
+                  return (
+                    <li key={idMat}>
+                      {mat?.nombrematerial || "Desconocido"} (ID: {idMat}) –{" "}
+                      {cantidad}
+                    </li>
+                  );
+                })}
+              </ul>
+            </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "10px",
+                marginTop: "20px",
+              }}
+            >
+              <Boton as="button" onClick={() => setMostrarVistaPrevia(false)}>
+                Cancelar
+              </Boton>
+              <Boton
+                as="button"
+                primario
+                onClick={(e) => {
+                  e.preventDefault();
+                  confirmarPrestamo();
+                }}
+              >
+                Confirmar
+              </Boton>
+            </div>
+          </ModalContenido>
+        </ModalFondo>
+      )}
     </>
   );
 };

@@ -54,6 +54,29 @@ const InicioSesion = () => {
         localStorage.setItem("tipoUsuario", data.tipo);
 
         if (data.tipo === "empleado") {
+          try {
+            const permisosRes = await fetch(
+              `http://localhost:4000/empleado/${data.datos.id}/permisos`
+            );
+            const permisosData = await permisosRes.json();
+
+            if (permisosRes.ok) {
+              const idsPermisos = permisosData.map(
+                (permiso) => permiso.idpermiso
+              );
+              localStorage.setItem(
+                "permisosUsuario",
+                JSON.stringify(idsPermisos)
+              );
+            } else {
+              console.warn("No se pudieron cargar los permisos del usuario");
+              localStorage.setItem("permisosUsuario", "[]");
+            }
+          } catch (permisoError) {
+            console.error("Error al obtener permisos", permisoError);
+            localStorage.setItem("permisosUsuario", "[]");
+          }
+
           navigate("/inicio-empleado");
         } else if (data.tipo === "alumno") {
           navigate("/inicio-alumno");
@@ -101,14 +124,6 @@ const InicioSesion = () => {
         <ContenedorBoton>
           <Boton as="button" primario type="submit">
             Iniciar Sesión
-          </Boton>
-          <Boton
-            as="button"
-            primario
-            type="button"
-            onClick={() => navigate("/contrasena-olvidada")}
-          >
-            Olvidé mi contraseña
           </Boton>
         </ContenedorBoton>
 

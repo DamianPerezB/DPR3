@@ -18,13 +18,14 @@ const Tabla = styled.table`
 const EncabezadoTabla = styled.thead`
   background-color: #5d9cec;
   color: white;
-  text-align: left;
+  text-align: center;
 `;
 
 const FilaTabla = styled.tr``;
 
 const CeldaEncabezado = styled.th`
   padding: 12px 15px;
+  text-align: center;
 `;
 
 const CuerpoTabla = styled.tbody``;
@@ -50,31 +51,31 @@ const InputBusqueda = styled.input`
   font-size: 16px;
 `;
 
-const BotonMostrarMas = styled.button`
+const Boton = styled.button`
   padding: 8px 12px;
-  background-color: #5d9cec;
+  background-color: ${(props) => (props.recibir ? "#d9534f" : "#5cb85c")};
   border: none;
   color: white;
   border-radius: 7px;
   cursor: pointer;
-  margin-right: 5px;
+  margin: 0 3px;
   &:hover {
-    background-color: #4a89dc;
+    background-color: ${(props) => (props.recibir ? "#c9302c" : "#4cae4c")};
   }
 `;
 
-const MostrarMaterialesA = () => {
+const MostrarPrestamosActivos = () => {
   const navigate = useNavigate();
-  const [materiales, setMateriales] = useState([]);
+  const [prestamos, setPrestamos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
 
-  const obtenerMateriales = async () => {
+  const obtenerPrestamos = async () => {
     try {
-      const response = await fetch("http://localhost:4000/materiales");
+      const response = await fetch("http://localhost:4000/activos");
       const data = await response.json();
-      setMateriales(data);
+      setPrestamos(data);
     } catch (error) {
-      console.error("Error al obtener materiales:", error);
+      console.error("Error al obtener préstamos:", error);
     }
   };
 
@@ -82,39 +83,44 @@ const MostrarMaterialesA = () => {
     const id = localStorage.getItem("idUsuario");
     const tipo = localStorage.getItem("tipoUsuario");
 
-    if (!id || tipo !== "alumno") {
+    if (!id || tipo !== "empleado") {
       navigate("/");
       return;
     }
-    obtenerMateriales();
+    obtenerPrestamos();
   }, []);
 
-  const materialesFiltrados = materiales.filter((material) => {
+  const prestamosFiltrados = prestamos.filter((p) => {
     const termino = busqueda.toLowerCase();
     return (
-      material.id.toLowerCase().includes(termino) ||
-      material.nombrematerial.toLowerCase().includes(termino)
+      p.id.toLowerCase().includes(termino) ||
+      p.alumno_matricula?.toLowerCase().includes(termino) ||
+      p.empleado_nombre?.toLowerCase().includes(termino)
     );
   });
+
+  const traducirTipoPrestamo = (tipo) => {
+    return tipo === 0 ? "Interno" : tipo === 1 ? "Externo" : "Desconocido";
+  };
 
   return (
     <>
       <Helmet>
-        <title>Mostrar Materiales</title>
+        <title>Mostrar Préstamos</title>
       </Helmet>
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Listado de Materiales</Titulo>
+          <Titulo>Listado de Préstamos</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/inicio-alumno" />
+      <BotonAtras ruta="/prestamos" />
 
       <ContenedorBusqueda>
         <InputBusqueda
           type="text"
-          placeholder="Buscar por ID o nombre..."
+          placeholder="Buscar por ID, matrícula o empleado..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
@@ -124,32 +130,30 @@ const MostrarMaterialesA = () => {
         <EncabezadoTabla>
           <FilaTabla>
             <CeldaEncabezado>ID</CeldaEncabezado>
-            <CeldaEncabezado>Nombre</CeldaEncabezado>
-            <CeldaEncabezado>Marca</CeldaEncabezado>
-            <CeldaEncabezado>Modelo</CeldaEncabezado>
-            <CeldaEncabezado>Cantidad</CeldaEncabezado>
-            <CeldaEncabezado>Estado</CeldaEncabezado>
-            <CeldaEncabezado>Acciones</CeldaEncabezado>
+            <CeldaEncabezado>Matrícula</CeldaEncabezado>
+            <CeldaEncabezado>Empleado</CeldaEncabezado>
+            <CeldaEncabezado>Fecha Devolución</CeldaEncabezado>
+            <CeldaEncabezado>Tipo de Préstamo</CeldaEncabezado>
+            <CeldaEncabezado>Opción</CeldaEncabezado>
           </FilaTabla>
         </EncabezadoTabla>
 
         <CuerpoTabla>
-          {materialesFiltrados.map((material) => (
-            <FilaTabla key={material.id}>
-              <Celda>{material.id}</Celda>
-              <Celda>{material.nombrematerial}</Celda>
-              <Celda>{material.marca}</Celda>
-              <Celda>{material.modelo}</Celda>
-              <Celda>{material.cantidad}</Celda>
+          {prestamosFiltrados.map((p) => (
+            <FilaTabla key={p.id}>
+              <Celda>{p.id}</Celda>
+              <Celda>{p.alumno_matricula}</Celda>
+              <Celda>{p.empleado_nombre}</Celda>
               <Celda>
-                {material.estado === 0 ? "Disponible" : "Sin Disponibilidad"}
+                {p.fechadevolucion
+                  ? new Date(p.fechadevolucion).toLocaleDateString("es-MX")
+                  : "Sin fecha"}
               </Celda>
+              <Celda>{traducirTipoPrestamo(p.tipoprestamo)}</Celda>
               <Celda>
-                <BotonMostrarMas
-                  onClick={() => navigate(`/mostrar-material-a/${material.id}`)}
-                >
-                  Mostrar más
-                </BotonMostrarMas>
+                <Boton onClick={() => navigate(`/finalizar-prestamo/${p.id}`)}>
+                  Finalizar prestamo
+                </Boton>
               </Celda>
             </FilaTabla>
           ))}
@@ -159,4 +163,4 @@ const MostrarMaterialesA = () => {
   );
 };
 
-export default MostrarMaterialesA;
+export default MostrarPrestamosActivos;

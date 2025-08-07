@@ -33,7 +33,6 @@ const ImagenMotas = styled.img`
   }
 `;
 
-// NUEVO: tabla estilizada para permisos
 const TablaPermisos = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -110,6 +109,13 @@ const EditarPermiso = () => {
 
       if (res.ok) {
         alert("Permisos actualizados correctamente");
+        const usuarioLogueado = localStorage.getItem("idUsuario");
+        if (usuarioLogueado && usuarioLogueado === id) {
+          localStorage.setItem(
+            "permisosUsuario",
+            JSON.stringify(permisosSeleccionados)
+          );
+        }
         navigate("/permisos");
       } else {
         alert("Error al actualizar permisos");
