@@ -9,8 +9,8 @@ import Historico from "../imagenes/Historico.png";
 import Orden from "../imagenes/orden.png";
 import Usuario from "../imagenes/usuario.png";
 import ActualizaCredenciales from "../imagenes/ActualizaciónCredencial2.png";
-import Reporte from "../imagenes/reporte.png";
-import Aviso from "../imagenes/aviso.png";
+//import Reporte from "../imagenes/reporte.png";
+//import Aviso from "../imagenes/aviso.png";
 import Permiso from "../imagenes/permiso.png";
 import Prestamo from "../imagenes/Prestamo.png";
 import BotonAtras from "../elementos/BotonAtras";
@@ -105,7 +105,7 @@ const HomeCoordinador = () => {
           </Boton>
         )}
       </ContenedorBotonRegistro>
-
+        {/*}
       <ContenedorImagen>
         <ImagenLogo1 src={Reporte} alt="LogoUam" />
         <ImagenLogo1 src={Aviso} alt="LogoUam" />
@@ -124,7 +124,7 @@ const HomeCoordinador = () => {
             Reportes
           </Boton>
         )}
-      </ContenedorBotonRegistro>
+      </ContenedorBotonRegistro> */}
 
       <ContenedorImagen>
         <ImagenLogo1 src={Permiso} alt="LogoUam" />
