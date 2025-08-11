@@ -46,7 +46,7 @@ const RegistrarAlumno = () => {
     apellidop: "",
     apellidom: "",
     unidad: "",
-    división: "",
+    division: "",
     licenciatura: "",
     estado: "",
     correoinstitucional: "",
@@ -60,7 +60,6 @@ const RegistrarAlumno = () => {
       return;
     }
 
-    // Cuando cambia la licenciatura, actualizar división según su valor
     if (name === "licenciatura") {
       let nuevaDivision = "";
 
@@ -74,7 +73,7 @@ const RegistrarAlumno = () => {
         nuevaDivision = "";
       }
 
-      setFormData({ ...formData, [name]: value, división: nuevaDivision });
+      setFormData({ ...formData, [name]: value, division: nuevaDivision });
       return;
     }
 
@@ -227,11 +226,10 @@ const RegistrarAlumno = () => {
             <option value="136">Humanidades</option>
           </Select>
 
-          {/* División asignada automáticamente */}
           <Input2
             type="text"
-            name="división"
-            value={formData.división}
+            name="division"
+            value={formData.division}
             placeholder="División"
             readOnly
           />

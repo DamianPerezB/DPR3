@@ -47,7 +47,7 @@ const EditarAlumno = () => {
     apellidop: "",
     apellidom: "",
     unidad: "",
-    división: "CNI",
+    division: "",
     licenciatura: "",
     estado: "",
     correoinstitucional: "",
@@ -60,8 +60,6 @@ const EditarAlumno = () => {
         const response = await fetch(`http://localhost:4000/alumno/${id}`);
         if (response.ok) {
           const data = await response.json();
-          console.log("Datos recibidos:", data);
-
           setFormData({
             matricula: data.matricula || "",
             password: "",
@@ -70,7 +68,7 @@ const EditarAlumno = () => {
             apellidop: data.apellidopaterno || "",
             apellidom: data.apellidomaterno || "",
             unidad: data.unidad ? String(data.unidad) : "",
-            división: data.división || "CNI",
+            division: data.division || "",
             licenciatura: data.licenciatura ? String(data.licenciatura) : "",
             estado: data.estado ? String(data.estado) : "",
             correoinstitucional: data.correoinstitucional || "",
@@ -89,12 +87,23 @@ const EditarAlumno = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    let updatedFormData = { ...formData, [name]: value };
 
     if (name === "matricula" && !/^[0-9]*$/.test(value)) {
       return;
     }
 
-    setFormData({ ...formData, [name]: value });
+    if (name === "licenciatura") {
+      if (["131", "141", "144", "132"].includes(value)) {
+        updatedFormData.division = "CNI";
+      } else if (["130", "137", "138"].includes(value)) {
+        updatedFormData.division = "CCD";
+      } else if (["128", "129", "135", "136"].includes(value)) {
+        updatedFormData.division = "CSH";
+      }
+    }
+
+    setFormData(updatedFormData);
   };
 
   const handleSubmit = async (e) => {
@@ -133,8 +142,8 @@ const EditarAlumno = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Alumno actualizado:", data);
         alert("Datos del alumno actualizados con éxito");
+        navigate("/mostrar-alumnos");
       } else {
         const errorData = await response.json();
         console.error("Error al actualizar:", errorData);

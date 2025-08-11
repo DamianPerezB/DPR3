@@ -56,7 +56,6 @@ const MostrarPrestamo = () => {
         setPrestamo(data);
         setMateriales(data.materiales || []);
       } catch (err) {
-        console.error(err);
         alert("Error al obtener el préstamo.");
       }
     };

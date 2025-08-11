@@ -96,7 +96,7 @@ const EditarPass = () => {
         delete alumnoData.password;
       }
 
-      const response = await fetch(`http://localhost:4000/alumno/${id}`, {
+      const response = await fetch(`http://localhost:4000/pass/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(alumnoData),

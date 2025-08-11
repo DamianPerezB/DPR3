@@ -41,14 +41,17 @@ const PerfilAlumno = () => {
       return;
     }
 
-    fetch(`http://localhost:4000/alumno/${id}`)
+    fetch(`http://localhost:4000/perfil/${id}`)
       .then((response) => {
         if (!response.ok) throw new Error("No se encontró el alumno");
         return response.json();
       })
-      .then((data) => setAlumno(data))
-      .catch((error) => {
-        console.error("Error al obtener alumno:", error);
+      .then((data) => {
+        setAlumno(data);
+      })
+      .catch(() => {
+        alert("No se encontró el alumno");
+        navigate("/");
       });
   }, [navigate]);
 
@@ -70,7 +73,7 @@ const PerfilAlumno = () => {
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Alumno</TitutuloSecciones>
 
-          {alumno ? (
+          {alumno && (
             <>
               Nombre completo:
               <Input2
@@ -84,7 +87,7 @@ const PerfilAlumno = () => {
               Unidad:
               <Input2 value={alumno.unidad} disabled />
               División:
-              <Input2 value={alumno.división} disabled />
+              <Input2 value={alumno.division} disabled />
               Licenciatura:
               <Input2 value={alumno.licenciatura} disabled />
               Estado:
@@ -94,8 +97,6 @@ const PerfilAlumno = () => {
               Observaciones:
               <Input2 value={alumno.observaciones || "Ninguna"} disabled />
             </>
-          ) : (
-            <p>Cargando datos...</p>
           )}
         </FormularioRegistroSecciones>
 

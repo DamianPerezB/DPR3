@@ -30,8 +30,8 @@ const ImagenMotas = styled.img`
 `;
 
 const MostrarMaterialA = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     id: "",
     inventarioUAM: "",
@@ -77,7 +77,6 @@ const MostrarMaterialA = () => {
           navigate("/mostrar-materiales-a");
         }
       } catch (error) {
-        console.error("Error al cargar material:", error);
         navigate("/mostrar-materiales-a");
       }
     };

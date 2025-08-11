@@ -48,7 +48,6 @@ const InputBusqueda = styled.input`
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
-  aling: center;
 `;
 
 const BotonEditar = styled.button`
@@ -62,6 +61,32 @@ const BotonEditar = styled.button`
     background-color: #ec971f;
   }
 `;
+
+const licenciaturasMap = {
+  131: "Ingeniería en Computación",
+  141: "Ingeniería Biológica",
+  144: "Biología Molecular",
+  132: "Matemáticas Aplicadas",
+  130: "Diseño",
+  137: "Tecnologías y Sistemas de Información",
+  138: "Ciencias de la Comunicación",
+  128: "Administración",
+  129: "Derecho",
+  135: "Estudios Socioterritoriales",
+  136: "Humanidades",
+};
+
+const traducirEstado = (valor) => {
+  if (valor === 1) return "Inscrito";
+  if (valor === 2) return "No inscrito";
+  return valor;
+};
+
+const traducirSancion = (valor) => {
+  if (valor == 0) return "Sin sanción";
+  if (valor == 1) return "Activa";
+  return valor;
+};
 
 const MostrarAlumnos = () => {
   const navigate = useNavigate();
@@ -120,8 +145,6 @@ const MostrarAlumnos = () => {
             <CeldaEncabezado>Nombre</CeldaEncabezado>
             <CeldaEncabezado>Apellido Paterno</CeldaEncabezado>
             <CeldaEncabezado>Apellido Materno</CeldaEncabezado>
-            <CeldaEncabezado>Unidad</CeldaEncabezado>
-            <CeldaEncabezado>División</CeldaEncabezado>
             <CeldaEncabezado>Licenciatura</CeldaEncabezado>
             <CeldaEncabezado>Estado</CeldaEncabezado>
             <CeldaEncabezado>Correo Institucional</CeldaEncabezado>
@@ -138,13 +161,13 @@ const MostrarAlumnos = () => {
               <Celda>{alumno.nombre}</Celda>
               <Celda>{alumno.apellidopaterno}</Celda>
               <Celda>{alumno.apellidomaterno}</Celda>
-              <Celda>{alumno.unidad}</Celda>
-              <Celda>{alumno.división}</Celda>
-              <Celda>{alumno.licenciatura}</Celda>
-              <Celda>{alumno.estado}</Celda>
+              <Celda>
+                {licenciaturasMap[alumno.licenciatura] || alumno.licenciatura}
+              </Celda>
+              <Celda>{traducirEstado(alumno.estado)}</Celda>
               <Celda>{alumno.correoinstitucional}</Celda>
               <Celda>{alumno.observaciones}</Celda>
-              <Celda>{alumno.sancion}</Celda>
+              <Celda>{traducirSancion(alumno.sancion)}</Celda>
               <Celda>
                 <BotonEditar
                   onClick={() => navigate(`/editar-alumno/${alumno.matricula}`)}

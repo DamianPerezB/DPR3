@@ -68,7 +68,16 @@ const HomeCoordinador = () => {
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/" />
+      <Boton
+        as="button"
+        primario
+        onClick={() => {
+          localStorage.clear();
+          navigate("/");
+        }}
+      >
+        Cerrar sesión
+      </Boton>
 
       <ContenedorImagen>
         <ImagenLogo1 src={Orden} alt="LogoUam" />
@@ -105,26 +114,6 @@ const HomeCoordinador = () => {
           </Boton>
         )}
       </ContenedorBotonRegistro>
-        {/*}
-      <ContenedorImagen>
-        <ImagenLogo1 src={Reporte} alt="LogoUam" />
-        <ImagenLogo1 src={Aviso} alt="LogoUam" />
-      </ContenedorImagen>
-      <ContenedorBotonRegistro>
-        <Boton as="button" primario onClick={() => navigate("/avisos")}>
-          Sanciones
-        </Boton>
-        {tienePermiso(2) && (
-          <Boton
-            as="button"
-            primario
-            onClick={() => navigate("/reportes")}
-            style={{ marginLeft: "-40%" }}
-          >
-            Reportes
-          </Boton>
-        )}
-      </ContenedorBotonRegistro> */}
 
       <ContenedorImagen>
         <ImagenLogo1 src={Permiso} alt="LogoUam" />

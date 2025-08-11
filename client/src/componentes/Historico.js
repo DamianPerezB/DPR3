@@ -36,16 +36,32 @@ const Celda = styled.td`
   text-align: center;
 `;
 
+const CeldaEstado = styled.td`
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+  font-weight: bold;
+  color: ${(props) => props.color || "black"};
+`;
+
 const ContenedorBusqueda = styled.div`
   width: 90%;
   margin: 20px auto;
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 `;
 
 const InputBusqueda = styled.input`
   padding: 10px;
   width: 300px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+`;
+
+const SelectFiltro = styled.select`
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
@@ -68,6 +84,8 @@ const Historico = () => {
   const navigate = useNavigate();
   const [prestamos, setPrestamos] = useState([]);
   const [busqueda, setBusqueda] = useState("");
+  const [filtroColor, setFiltroColor] = useState("todos");
+  const [prestamosFiltrados, setPrestamosFiltrados] = useState([]);
 
   const obtenerPrestamos = async () => {
     try {
@@ -90,14 +108,42 @@ const Historico = () => {
     obtenerPrestamos();
   }, []);
 
-  const prestamosFiltrados = prestamos.filter((p) => {
-    const termino = busqueda.toLowerCase();
-    return (
-      p.id.toLowerCase().includes(termino) ||
-      p.alumno_matricula?.toLowerCase().includes(termino) ||
-      p.empleado_nombre?.toLowerCase().includes(termino)
-    );
-  });
+  useEffect(() => {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const filtrados = prestamos.filter((p) => {
+      const termino = busqueda.toLowerCase();
+      const fechaDevolucion = p.fechadevolucion
+        ? new Date(p.fechadevolucion)
+        : null;
+
+      let color = "black";
+      if (p.estadoprestamo === 0 && fechaDevolucion && fechaDevolucion < hoy) {
+        color = "red";
+      } else if (p.estadoprestamo === 1) {
+        color = "blue";
+      } else if (
+        p.estadoprestamo === 0 &&
+        fechaDevolucion &&
+        fechaDevolucion >= hoy
+      ) {
+        color = "green";
+      }
+
+      const coincideBusqueda =
+        p.id.toLowerCase().includes(termino) ||
+        p.alumno_matricula?.toLowerCase().includes(termino) ||
+        p.empleado_nombre?.toLowerCase().includes(termino);
+
+      const coincideColor =
+        filtroColor === "todos" || filtroColor === color;
+
+      return coincideBusqueda && coincideColor;
+    });
+
+    setPrestamosFiltrados(filtrados);
+  }, [prestamos, busqueda, filtroColor]);
 
   const traducirTipoPrestamo = (tipo) => {
     return tipo === 0 ? "Interno" : tipo === 1 ? "Externo" : "Desconocido";
@@ -111,11 +157,11 @@ const Historico = () => {
 
       <Header>
         <ContenedorHeader>
-          <Titulo>Listado de Préstamos</Titulo>
+          <Titulo>Histórico</Titulo>
         </ContenedorHeader>
       </Header>
 
-      <BotonAtras ruta="/prestamos" />
+      <BotonAtras ruta="/inicio-empleado" />
 
       <ContenedorBusqueda>
         <InputBusqueda
@@ -124,6 +170,15 @@ const Historico = () => {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
+        <SelectFiltro
+          value={filtroColor}
+          onChange={(e) => setFiltroColor(e.target.value)}
+        >
+          <option value="todos">Todos</option>
+          <option value="red">Vencidos</option>
+          <option value="blue">Devueltos</option>
+          <option value="green">Vigentes</option>
+        </SelectFiltro>
       </ContenedorBusqueda>
 
       <Tabla>
@@ -140,28 +195,44 @@ const Historico = () => {
         </EncabezadoTabla>
 
         <CuerpoTabla>
-          {prestamosFiltrados.map((p) => (
-            <FilaTabla key={p.id}>
-              <Celda>{p.id}</Celda>
-              <Celda>{p.alumno_matricula}</Celda>
-              <Celda>{p.empleado_nombre}</Celda>
-              <Celda>
-                {p.fechadevolucion
-                  ? new Date(p.fechadevolucion).toLocaleDateString("es-MX")
-                  : "Sin fecha"}
-              </Celda>
-              <Celda>{traducirTipoPrestamo(p.tipoprestamo)}</Celda>
-              <Celda>
-                {p.estadoprestamo === 0 ? "Prestado" : "Devuelto"}
-              </Celda>{" "}
-              {/* ← NUEVO */}
-              <Celda>
-                <Boton onClick={() => navigate(`/mostrar-prestamo/${p.id}`)}>
-                  Mostrar Más
-                </Boton>
-              </Celda>
-            </FilaTabla>
-          ))}
+          {prestamosFiltrados.map((p) => {
+            const fechaDevolucion = p.fechadevolucion
+              ? new Date(p.fechadevolucion)
+              : null;
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            let color = "black";
+            if (p.estadoprestamo === 0 && fechaDevolucion && fechaDevolucion < hoy) {
+              color = "red";
+            } else if (p.estadoprestamo === 1) {
+              color = "blue";
+            } else if (p.estadoprestamo === 0 && fechaDevolucion && fechaDevolucion >= hoy) {
+              color = "green";
+            }
+
+            return (
+              <FilaTabla key={p.id}>
+                <Celda>{p.id}</Celda>
+                <Celda>{p.alumno_matricula}</Celda>
+                <Celda>{p.empleado_nombre}</Celda>
+                <CeldaEstado color={color}>
+                  {fechaDevolucion
+                    ? fechaDevolucion.toLocaleDateString("es-MX")
+                    : "Sin fecha"}
+                </CeldaEstado>
+                <Celda>{traducirTipoPrestamo(p.tipoprestamo)}</Celda>
+                <CeldaEstado color={color}>
+                  {p.estadoprestamo === 0 ? "Prestado" : "Devuelto"}
+                </CeldaEstado>
+                <Celda>
+                  <Boton onClick={() => navigate(`/mostrar-prestamo/${p.id}`)}>
+                    Mostrar Más
+                  </Boton>
+                </Celda>
+              </FilaTabla>
+            );
+          })}
         </CuerpoTabla>
       </Tabla>
     </>

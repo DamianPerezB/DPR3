@@ -263,11 +263,14 @@ const RegistrarPrestamo = () => {
     })
     .slice(0, 3);
 
-  const materialesFiltrados = materiales.filter(
-    (m) =>
-      m.id.toLowerCase().includes(busquedaMaterial.toLowerCase()) ||
-      m.nombrematerial.toLowerCase().includes(busquedaMaterial.toLowerCase())
-  );
+  // Filtramos materiales para que solo aparezcan con cantidad > 0 y que coincidan con la búsqueda
+  const materialesFiltrados = materiales
+    .filter(
+      (m) =>
+        m.cantidad > 0 &&
+        (m.id.toLowerCase().includes(busquedaMaterial.toLowerCase()) ||
+          m.nombrematerial.toLowerCase().includes(busquedaMaterial.toLowerCase()))
+    );
 
   return (
     <>
@@ -319,8 +322,7 @@ const RegistrarPrestamo = () => {
                     borderBottom: "1px solid #eee",
                   }}
                 >
-                  {a.matricula} - {a.nombre} {a.apellidopaterno}{" "}
-                  {a.apellidomaterno}
+                  {a.matricula} - {a.nombre} {a.apellidopaterno} {a.apellidomaterno}
                 </div>
               ))}
             </div>
@@ -351,12 +353,7 @@ const RegistrarPrestamo = () => {
             type="date"
             name="fechaPrestamo"
             value={datosPrestamo.fechaPrestamo}
-            onChange={(e) =>
-              setDatosPrestamo({
-                ...datosPrestamo,
-                fechaPrestamo: e.target.value,
-              })
-            }
+            disabled
           />
           Fecha devolución
           <Input2

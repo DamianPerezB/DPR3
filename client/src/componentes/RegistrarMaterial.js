@@ -1,8 +1,8 @@
+import React, { useState } from "react";
 import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
-import React, { useState } from "react";
+import BotonAtras from "../elementos/BotonAtras";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   TitutuloSecciones,
@@ -13,7 +13,6 @@ import {
   FormularioRegistro,
 } from "../elementos/ElementosDeFormulario";
 import imagen1 from "../imagenes/motasPantera4.png";
-import BotonAtras from "../elementos/BotonAtras";
 
 const ImagenMotas = styled.img`
   position: absolute;
@@ -22,7 +21,6 @@ const ImagenMotas = styled.img`
   width: 75% 5%;
   height: 120%;
   z-index: -1;
-
   @media (max-width: 768px) {
     margin-left: 0;
     width: 24%;
@@ -32,10 +30,7 @@ const ImagenMotas = styled.img`
 `;
 
 const RegistrarMaterial = () => {
-  const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
-    id: "",
     inventarioUAM: "",
     inventarioCoordinacion: "",
     marca: "",
@@ -59,6 +54,33 @@ const RegistrarMaterial = () => {
       return;
     }
 
+    if (name === "cantidad") {
+      const cantidadNum = value ? parseInt(value) : 0;
+      setFormData((prev) => ({
+        ...prev,
+        cantidad: value,
+        estado: cantidadNum > 0 ? 0 : 1,
+      }));
+      return;
+    }
+
+    if (name === "tipo") {
+      if (value === "0") {
+        setFormData((prev) => ({
+          ...prev,
+          tipo: value,
+          cantidad: "1",
+          estado: 0,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          tipo: value,
+        }));
+      }
+      return;
+    }
+
     setFormData({ ...formData, [name]: value });
   };
 
@@ -66,7 +88,7 @@ const RegistrarMaterial = () => {
     e.preventDefault();
 
     for (const campo in formData) {
-      if (formData[campo].trim() === "") {
+      if (formData[campo] === "" || formData[campo] === null) {
         alert(`Por favor, completa el campo: ${campo}`);
         return;
       }
@@ -78,21 +100,36 @@ const RegistrarMaterial = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          numeroSerie: parseInt(formData.numeroSerie),
-          cantidad: parseInt(formData.cantidad),
+          numeroSerie: formData.numeroSerie
+            ? parseInt(formData.numeroSerie)
+            : null,
+          cantidad: formData.cantidad ? parseInt(formData.cantidad) : null,
           estado: parseInt(formData.estado),
           tipo: parseInt(formData.tipo),
         }),
       });
 
-      if (!response.ok) throw new Error("Error al registrar material");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al registrar material");
+      }
 
-      const data = await response.json();
       alert("Material registrado con éxito");
-      navigate("/materiales");
+      setFormData({
+      inventarioUAM: "",
+      inventarioCoordinacion: "",
+      marca: "",
+      modelo: "",
+      numeroSerie: "",
+      estado: "",
+      nombreMaterial: "",
+      cantidad: "",
+      tipo: "",
+      descripcion: "",
+    });
     } catch (error) {
-      console.error("Error al registrar material:", error);
-      alert("Hubo un error al registrar el material");
+      console.error("Error al registrar material:", error.message);
+      alert(`Hubo un error al registrar el material: ${error.message}`);
     }
   };
 
@@ -114,22 +151,12 @@ const RegistrarMaterial = () => {
       <FormularioRegistro onSubmit={handleSubmit}>
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Material</TitutuloSecciones>
-          ID del Material
-          <Input2
-            type="text"
-            name="id"
-            value={formData.id}
-            onChange={handleChange}
-            placeholder="ID único del material"
-            required
-          />
           Inventario UAM
           <Input2
             type="text"
             name="inventarioUAM"
             value={formData.inventarioUAM}
             onChange={handleChange}
-            placeholder="Inventario UAM"
             required
           />
           Inventario Coordinación
@@ -138,7 +165,6 @@ const RegistrarMaterial = () => {
             name="inventarioCoordinacion"
             value={formData.inventarioCoordinacion}
             onChange={handleChange}
-            placeholder="Inventario Coordinación"
             required
           />
           Marca
@@ -147,7 +173,6 @@ const RegistrarMaterial = () => {
             name="marca"
             value={formData.marca}
             onChange={handleChange}
-            placeholder="Marca"
             required
           />
           Modelo
@@ -156,7 +181,6 @@ const RegistrarMaterial = () => {
             name="modelo"
             value={formData.modelo}
             onChange={handleChange}
-            placeholder="Modelo"
             required
           />
           Número de Serie
@@ -165,7 +189,6 @@ const RegistrarMaterial = () => {
             name="numeroSerie"
             value={formData.numeroSerie}
             onChange={handleChange}
-            placeholder="Ej: 1234567890"
             required
           />
           Nombre del Material
@@ -174,7 +197,6 @@ const RegistrarMaterial = () => {
             name="nombreMaterial"
             value={formData.nombreMaterial}
             onChange={handleChange}
-            placeholder="Ej: Laptop Dell"
             required
           />
           Cantidad
@@ -183,16 +205,11 @@ const RegistrarMaterial = () => {
             name="cantidad"
             value={formData.cantidad}
             onChange={handleChange}
-            placeholder="Ej: 10"
+            disabled={formData.tipo === "0"}
             required
           />
           Estado
-          <Select
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-            required
-          >
+          <Select name="estado" value={formData.estado} disabled>
             <option value="">Seleccione Estado</option>
             <option value="0">Disponible</option>
             <option value="1">Sin Disponibilidad</option>
@@ -214,7 +231,6 @@ const RegistrarMaterial = () => {
             name="descripcion"
             value={formData.descripcion}
             onChange={handleChange}
-            placeholder="Breve descripción del material"
             required
           />
         </FormularioRegistroSecciones>

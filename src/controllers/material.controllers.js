@@ -26,10 +26,9 @@ const getMaterial = async (req, res, next) => {
   }
 };
 
-const createMaterial = async (req, res, next) => {
+const createMaterial = async (req, res) => {
   try {
     const {
-      id,
       inventarioUAM,
       inventarioCoordinacion,
       marca,
@@ -42,14 +41,32 @@ const createMaterial = async (req, res, next) => {
       descripcion,
     } = req.body;
 
+    const lastIdResult = await pool.query(
+      `SELECT ID 
+       FROM material 
+       WHERE ID LIKE 'MAT-LAB-%' 
+       ORDER BY ID DESC 
+       LIMIT 1`
+    );
+
+    let newId;
+    if (lastIdResult.rows.length === 0) {
+      newId = "MAT-LAB-000001";
+    } else {
+      const lastId = lastIdResult.rows[0].id;
+      const lastNumber = parseInt(lastId.replace("MAT-LAB-", ""), 10);
+      const nextNumber = (lastNumber + 1).toString().padStart(6, "0");
+      newId = `MAT-LAB-${nextNumber}`;
+    }
+
     const result = await pool.query(
       `INSERT INTO material 
-            (ID, Inventario_UAM, Inventario_coordinacion, Marca, Modelo, NumeroSerie, 
-             Estado, NombreMaterial, Cantidad, Tipo, Descripcion) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
-            RETURNING *`,
+        (ID, Inventario_UAM, Inventario_coordinacion, Marca, Modelo, NumeroSerie, 
+         Estado, NombreMaterial, Cantidad, Tipo, Descripcion) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+        RETURNING *`,
       [
-        id,
+        newId,
         inventarioUAM,
         inventarioCoordinacion,
         marca,
@@ -65,7 +82,8 @@ const createMaterial = async (req, res, next) => {
 
     res.json(result.rows[0]);
   } catch (error) {
-    next(error);
+    console.error("Error en createMaterial:", error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 

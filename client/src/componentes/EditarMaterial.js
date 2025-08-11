@@ -82,6 +82,7 @@ const EditarMaterial = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    // Validar números en campos numéricos
     if (
       (name === "numeroSerie" || name === "cantidad") &&
       value &&
@@ -90,14 +91,22 @@ const EditarMaterial = () => {
       return;
     }
 
-    setFormData({ ...formData, [name]: value });
+    let updatedData = { ...formData, [name]: value };
+
+    // Estado automático según cantidad
+    if (name === "cantidad") {
+      const cantidadNum = parseInt(value || "0", 10);
+      updatedData.estado = cantidadNum > 0 ? "0" : "1"; // 0 = Disponible, 1 = Sin disponibilidad
+    }
+
+    setFormData(updatedData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     for (const campo in formData) {
-      if (formData[campo].trim() === "") {
+      if (formData[campo].toString().trim() === "") {
         alert(`Por favor, completa el campo: ${campo}`);
         return;
       }
@@ -118,9 +127,7 @@ const EditarMaterial = () => {
 
       if (!response.ok) throw new Error("Error al actualizar material");
 
-      const data = await response.json();
       alert("Material actualizado con éxito");
-      navigate("/materiales");
     } catch (error) {
       console.error("Error al actualizar material:", error);
       alert("Hubo un error al actualizar el material");
@@ -145,107 +152,100 @@ const EditarMaterial = () => {
       <FormularioRegistro onSubmit={handleSubmit}>
         <FormularioRegistroSecciones>
           <TitutuloSecciones>Datos del Material</TitutuloSecciones>
+
           ID del Material
           <Input2
             type="text"
             name="id"
             value={formData.id}
-            onChange={handleChange}
-            placeholder="ID único del material"
             readOnly
           />
+
           Inventario UAM
           <Input2
             type="text"
             name="inventarioUAM"
             value={formData.inventarioUAM}
-            onChange={handleChange}
-            placeholder="Inventario UAM"
-            required
+            readOnly
           />
+
           Inventario Coordinación
           <Input2
             type="text"
             name="inventarioCoordinacion"
             value={formData.inventarioCoordinacion}
-            onChange={handleChange}
-            placeholder="Inventario Coordinación"
-            required
+            readOnly
           />
+
           Marca
           <Input2
             type="text"
             name="marca"
             value={formData.marca}
             onChange={handleChange}
-            placeholder="Marca"
             required
           />
+
           Modelo
           <Input2
             type="text"
             name="modelo"
             value={formData.modelo}
             onChange={handleChange}
-            placeholder="Modelo"
             required
           />
+
           Número de Serie
           <Input2
             type="text"
             name="numeroSerie"
             value={formData.numeroSerie}
             onChange={handleChange}
-            placeholder="Ej: 1234567890"
             required
           />
+
           Nombre del Material
           <Input2
             type="text"
             name="nombreMaterial"
             value={formData.nombreMaterial}
             onChange={handleChange}
-            placeholder="Ej: Laptop Dell"
             required
           />
+
           Cantidad
           <Input2
             type="text"
             name="cantidad"
             value={formData.cantidad}
             onChange={handleChange}
-            placeholder="Ej: 10"
             required
           />
+
           Estado
-          <Select
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Seleccione Estado</option>
-            <option value="0">Disponible</option>
-            <option value="1">Sin Disponibilidad</option>
-          </Select>
+          <Input2
+            type="text"
+            value={formData.estado === "0" ? "Disponible" : "Sin disponibilidad"}
+            readOnly
+          />
+
           Tipo
           <Select
             name="tipo"
             value={formData.tipo}
-            onChange={handleChange}
-            required
+            disabled
           >
             <option value="">Seleccione Tipo</option>
             <option value="0">Inventariado</option>
             <option value="1">Consumible</option>
           </Select>
+
           Descripción
           <Input2
             type="text"
             name="descripcion"
             value={formData.descripcion}
             onChange={handleChange}
-            placeholder="Breve descripción del material"
             required
           />
         </FormularioRegistroSecciones>

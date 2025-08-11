@@ -12,7 +12,7 @@ import MostrarUsuarios from "./componentes/MostrarUsuarios";
 import EliminarUsuarios from "./componentes/EliminarUsuarios";
 
 import RegistrarAlumno from "./componentes/RegistrarAlumno";
-import MostrarAlumno from "./componentes/MostrarAlumno";
+import MostrarAlumno from "./componentes/MostrarAlumnos";
 import EliminarAlumno from "./componentes/EliminarAlumno";
 import EditarAlumno from "./componentes/EditarAlumno";
 
@@ -66,6 +66,7 @@ root.render(
   <React.StrictMode>
     <>
       <Helmet>
+        <meta charSet="UTF-8" />
         <title>Plataforma UAM Cuajimalpa</title>
       </Helmet>
       <Titulos />
