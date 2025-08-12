@@ -89,24 +89,6 @@ const createEmpleado = async (req, res, next) => {
     );
 
     const empleado = result.rows[0];
-
-    let permisosAsignar = [];
-
-    if (tipo === 0) {
-      permisosAsignar = [0, 1, 2, 3, 4, 5];
-    } else if (tipo === 1) {
-      permisosAsignar = [0, 1, 2];
-    } else if (tipo === 2) {
-      permisosAsignar = [1, 2, 4, 5];
-    }
-
-    for (const permisoId of permisosAsignar) {
-      await client.query(
-        `INSERT INTO empleado_permiso (noEconomico, idPermiso) VALUES ($1, $2)`,
-        [noEconomico, permisoId]
-      );
-    }
-
     await client.query("COMMIT");
     res.json(empleado);
   } catch (error) {

@@ -1,8 +1,6 @@
 import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
-import Boton from "../elementos/Boton";
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BotonAtras from "../elementos/BotonAtras";
 
@@ -66,7 +64,6 @@ const BotonEliminar = styled.button`
 const EliminarMaterial = () => {
   const [materiales, setMateriales] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const navigate = useNavigate();
 
   const obtenerMateriales = async () => {
     try {
@@ -74,7 +71,7 @@ const EliminarMaterial = () => {
       const data = await response.json();
       setMateriales(data);
     } catch (error) {
-      console.error("Error al obtener materiales:", error);
+      alert("Error al obtener materiales:", error);
     }
   };
 

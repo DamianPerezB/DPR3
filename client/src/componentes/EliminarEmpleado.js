@@ -1,7 +1,6 @@
 import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BotonAtras from "../elementos/BotonAtras";
 
@@ -65,7 +64,6 @@ const BotonEliminar = styled.button`
 const EliminarEmpleado = () => {
   const [empleados, setEmpleados] = useState([]);
   const [busqueda, setBusqueda] = useState("");
-  const navigate = useNavigate();
 
   const obtenerEmpleados = async () => {
     try {

@@ -83,7 +83,6 @@ const RegistrarEmpleado = () => {
       const data = await response.json();
       console.log("Empleado registrado:", data);
       alert("Empleado registrado con éxito");
-      navigate("/registro-usuarios");
     } catch (error) {
       console.error("Error al registrar:", error);
       alert("Error al registrar al Empleado");

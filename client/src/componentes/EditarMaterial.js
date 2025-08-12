@@ -2,7 +2,7 @@ import { Header, Titulo, ContenedorHeader } from "../elementos/Header";
 import Boton from "../elementos/Boton";
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import styled from "styled-components";
 import {
   TitutuloSecciones,
@@ -32,7 +32,6 @@ const ImagenMotas = styled.img`
 `;
 
 const EditarMaterial = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
